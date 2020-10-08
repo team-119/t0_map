@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> 실시간 위치 추적 </title>
+<script>
+
+//위치받아오는 함수
+function getLocation()
+{
+   if (navigator.geolocation) // api지원
+   {
+       var positionOptions = {
+       timeout : Infinity,
+       maximumAge : 0,
+       enableHighAccuracy : true
+   };
+   // watchID 설정
+       watchID = navigator.geolocation.watchPosition(getPosition, catchError, positionOptions);
+   }
+       else // api지원x
+   {
+       alert("브라우저가 HTML5 Geolocation을 제공하지 않음.");
+   }
+}
+
+//위치추적 중단 함수
+function stopWatch() 
+{
+   navigator.geolocation.clearWatch(watchID);
+   watchID = null;
+}
+
+function getPosition(position)
+{
+   document.getElementById("location").innerHTML =
+        "Latitude: " + position.coords.latitude + "<br>" +
+        "Longitude: " + position.coords.longitude; 
+}
+
+function catchError(error) {
+   switch(error.code) 
+   {
+       case error.TIMEOUT:
+           alert("위치요청 시간 초과");
+           break;
+       case error.POSITION_UNAVAILABLE:
+           alert("위치정보 존재하지 않음");
+           break;
+       case error.PERMISSION_DENIED:
+           alert("위치정보 제공 거부됨");
+           break; 
+       default:
+           alert("알 수 없는 에러 발생");
+ }
+}
+</script>
+</head>
+
+<body>
+<h1>실시간 위치 추적</h1>
+<button onclick="getLocation()">추적 시작</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button onclick="stopWatch()">추적 중단</button>
+<p id="location"></p>
+</body>
+</html>
