@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Return t0</title>
+        <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script> <!--version2로 슬쩍수정-->
+        <script type="text/javascript">
+    /* t0반환 코드작성
+        환자-응급실별 t0 반환 (환자,응급실 순서대로 대응시키고 t0반환함수 호출하는 코드 작성할것)
+        t0(t_arive): (교통최적+최소시간) 경로의 예상소요시간을 현재시간에 더한값
+            +(ETA:예상도착시간 ETE:예상소요시간) 변수명 바꿀까??
+    */
+                var map;
+                var mylat=126.9850380932383;
+                var mylon=37.566567545861645;
+
+                function getLocation() //위치추적시작 함수
+                    {
+                        if (navigator.geolocation) // api지원
+                        {
+                            var positionOptions = 
+                            {   timeout : Infinity,
+                                maximumAge : 0,
+                                enableHighAccuracy : true
+                            };
+
+                            watchID = navigator.geolocation.watchPosition(getPosition, catchError, positionOptions); //watchID설정, 실시간위치추적
+                        }
+                        else { // api지원x
+                            alert("브라우저가 HTML5 Geolocation을 제공하지 않음.");
+                        }
+                    }
+
+                    function stopWatch() //위치추적 중단 함수
+                    {
+                        navigator.geolocation.clearWatch(watchID);
+                        watchID = null;
+                        document.getElementById("location").innerHTML = "TRACKING STOPPED";
+                    }
+
+                    function getPosition(position) //받아온위치 출력 및 변수에 저장
+                    {
+                        document.getElementById("location").innerHTML =
+                                "Latitude: " + position.coords.latitude + "<br>" +
+                                "Longitude: " + position.coords.longitude;
+                        mylat = position.coords.latitude;
+                        mylon = position.coords.longitude;
+                    }
+
+                    function catchError(error) //오류메시지 출력
+                    {
+                        switch(error.code) 
+                        {
+                            case error.TIMEOUT:
+                                alert("위치요청 시간 초과");
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                alert("위치정보 존재하지 않음");
+                                break;
+                            case error.PERMISSION_DENIED:
+                                alert("위치정보 제공 거부됨");
+                                break; 
+                            default:
+                                alert("알 수 없는 에러 발생");
+                        }
+                    }
+
+                function initTmap() {
+
+                    // 경로탐색 API 사용요청
+                    $("#btn_select")
+                            .click(
+                                    function() {
+            
+                                        //JSON TYPE EDIT [S]
+                                        $
+                                                .ajax({
+                                                    type : "POST",
+                                                    url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
+                                                    async : false,
+                                                    data : {
+                                                        "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
+                                                        //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
+                                                        "startX" : mylat,
+                                                        "startY" : mylon,
+                                                        //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
+                                                        "endX" : "127.10331814639885",
+                                                        "endY" : "37.403049076341794",
+                                                        "reqCoordType" : "WGS84GEO", //좌표요청타입
+                                                        "resCoordType" : "EPSG3857", //좌표반환타입
+                                                        "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
+                                                    },
+                                                    success : function(response) {
+            
+                                                        var resultData = response.features;
+
+                                                        var tTime = " 예상소요시간 : "
+                                                                + (resultData[0].properties.totalTime / 60)
+                                                                        .toFixed(0) + "분";
+            
+                                                        $("#result").text(tTime);
+                                                        },
+                                                    error : function(request, status, error) {
+                                                        console.log("code:"
+                                                                + request.status + "\n"
+                                                                + "message:"
+                                                                + request.responseText
+                                                                + "\n" + "error:" + error);
+                                                    }
+                                                });
+                                        //JSON TYPE EDIT [E]
+                                    });
+                }
+                
+
+    </script>
+    </head>
+
+    <body onload="initTmap();">
+        <h1>t0 반환 알고리즘</h1>
+        <h3>교통최적+최단시간 경로의 예상소요시간 및 달달한결과를 출력합니다</h3>
+		<div class="ft_area">
+
+					<button id="btn_select">눌러봐눌러봐</button>
+				</div>
+			</div>
+			<div class="map_act_btn_wrap clear_box"></div>
+			<div class="clear"></div>
+		</div>
+        
+		<div class="map_act_btn_wrap clear_box"></div>
+		<p id="result"></p>
+        <br />
+
+        <button onclick="getLocation()">추적 시작</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button onclick="stopWatch()">추적 중단</button>
+        <p id="location"></p>
+    </body>
+</html>
