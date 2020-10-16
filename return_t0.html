@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Return t0</title>
+        <title>t0 + mapservice</title>
         <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script> <!--version2로 슬쩍수정-->
         <script type="text/javascript">
     /* t0반환 코드작성
         환자-응급실별 t0 반환 (환자,응급실 순서대로 대응시키고 t0반환함수 호출하는 코드 작성할것)
-        t0(t_arive): (교통최적+최소시간) 경로의 예상소요시간을 현재시간에 더한값
-            +(ETA:예상도착시간 ETE:예상소요시간) 변수명 바꿀까??
+        +(ETA:예상도착시간 ETE:예상소요시간)
     */
-    var map;
-                var my = {lat: 37.7504963, lon: 127.02928809999999};
+                var map;
+                var nowHour, nowMinute, nowSecond;
+                var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
                 var a = {lat: 37.758568, lon: 127.077705}; //성모병원
                 var b = {lat: 37.741181, lon: 127.042525}; //경기도의료원
                 var c = {lat: 37.745791, lon: 127.061916}; //백병원
                 var d = {lat: 37.750760, lon: 127.046260}; //추병원
-                const hospital = [a, b, c, d]
+                const hospital = [a, b, c, d];
 
                 function getLocation() //위치추적시작 함수
                     {
@@ -39,21 +39,21 @@
                     {
                         navigator.geolocation.clearWatch(watchID);
                         watchID = null;
-                        document.getElementById("location").innerHTML = "TRACKING STOPPED";
+                        /*document.getElementById("location").innerHTML = "TRACKING STOPPED"; */
                     }
 
                 function getPosition(position) //받아온위치 출력 및 변수에 저장
                     {
-                        document.getElementById("location").innerHTML =
+                      /*  document.getElementById("location").innerHTML =
                                 "Latitude: " + position.coords.latitude + "<br>" +
-                                "Longitude: " + position.coords.longitude;
+                                "Longitude: " + position.coords.longitude; */
                         my.lat = position.coords.latitude;
                         my.lon = position.coords.longitude;
                     }
 
                 function catchError(error) //오류메시지 출력
                     {
-                        switch(error.code) 
+                        switch(error.code)
                         {
                             case error.TIMEOUT:
                                 alert("위치요청 시간 초과");
@@ -69,12 +69,23 @@
                         }
                     }
 
-                function initTmap() {
-                    // 경로탐색 API 사용요청
+                function getTime()
+                {
+                    var time = new Date(); // 현재시간 정보로딩              
+                    nowHour = time.getHours(); //현재시
+                    nowMinute = time.getMinutes(); //현재분
+                    nowSecond = time.getSeconds(); //현재초
+                }
+
+                function initTmap() { // 경로탐색 API 사용요청
+                    getLocation();
+                    
                     $("#btn_select")
                             .click(
                                     function() {
-            
+                                        getLocation();
+                                        var selectHospital = $("#selectHospital").val();
+
                                         //JSON TYPE EDIT [S]
                                         $
                                                 .ajax({
@@ -87,28 +98,30 @@
                                                         "startX" : my.lon,
                                                         "startY" : my.lat,
                                                         //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
-                                                        "endX" : "127.10331814639885",
-                                                        "endY" : "37.403049076341794",
+                                                        "endX" : hospital[selectHospital].lon,
+                                                        "endY" : hospital[selectHospital].lat,
                                                         "reqCoordType" : "WGS84GEO", //좌표요청타입
                                                         "resCoordType" : "EPSG3857", //좌표반환타입
                                                         "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
                                                     },
                                                     success : function(response) {
-            
-                                                        var resultData = response.features;
+                                                        
+                                                        var resultData = response.features; // 경로요청 결과로딩
                                                         var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
 
-                                                        var now = new Date(); // 현재시간정보 가져오기
-                                                        
-                                                        var nowHour = now.getHours(); //현재시
-                                                        var nowMinute = now.getMinutes(); //현재분
                                                         var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
                                                         var finalMinute = (nowMinute+totalTime)%60; //도착분
 
+                                                        var time = new Date(); // 현재시간 정보로딩              
+                                                            nowHour = time.getHours(); //현재시
+                                                            nowMinute = time.getMinutes(); //현재분
+                                                            nowSecond = time.getSeconds(); //현재초
+
+                                                        var TIME = " 현재시간 : " + nowHour + ":" + nowMinute + ":" + nowSecond + " /";
                                                         var ETE = " 예상소요시간(ETE) : " + totalTime + "분 /";
                                                         var ETA = " 예상도착시간(ETA) : " + finalHour + ":" + finalMinute;
-                                                        var TIME = " 현재시간 : " + nowHour + ":" + nowMinute + " /";
-                                                        $("#result").text(TIME + ETE + " " + ETA);
+                                                        
+                                                        $("#result").text(TIME + ETE + ETA);
                                                     },
                                                     error : function(request, status, error) {
                                                         console.log("code:"
@@ -121,24 +134,34 @@
                                         //JSON TYPE EDIT [E]
                                     });
                 }
-                
+
     </script>
     </head>
 
-    <body onload="initTmap();">
+    <body onload="initTmap()">
         <h1>t0 반환 알고리즘</h1>
-        <h3>교통최적+최단시간 경로의 예상소요시간을 출력합니다</h3>
-		<div class="ft_area">
+        <p>교통최적+최단시간 경로의 예상소요시간을 출력합니다</p>
 
-					<button id="btn_select">눌러봐눌러봐</button>
-        </div>
-        
+		<div class="ft_area">
+            <select id="selectHospital">
+                <option value="0">[권역][외상]가톨릭대학교의정부성모병원</option>
+                <option value="1">[기관]경기도의료원의정부병원</option>
+                <option value="2">[기관]의료법인영동의료재단의정부백병원</option>
+                <option value="3">[기관]추병원</option>
+            </select>
+
+            <button id="btn_select">결과출력</button>
+		</div>
+	
 		<p id="result"></p>
         <br />
 
+<!--
+        <p>현위치</p>
         <button onclick="getLocation()">추적 시작</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button onclick="stopWatch()">추적 중단</button>
         <p id="location"></p>
+-->
     </body>
 </html>

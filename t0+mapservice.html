@@ -10,7 +10,7 @@
         +(ETA:예상도착시간 ETE:예상소요시간)
     */
                 var map;
-                var my = {lat: 37.7504963, lon: 127.02928809999999}; //내좌표
+                var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
                 var a = {lat: 37.758568, lon: 127.077705}; //성모병원
                 var b = {lat: 37.741181, lon: 127.042525}; //경기도의료원
                 var c = {lat: 37.745791, lon: 127.061916}; //백병원
@@ -68,13 +68,13 @@
                         }
                     }
 
-                function initTmap() {
-                    // 경로탐색 API 사용요청
+                function initTmap() { // 경로탐색 API 사용요청
 
                     $("#btn_select")
                             .click(
                                     function() {
 
+                                        getLocation();
                                         var selectHospital = $("#selectHospital").val();
 
                                         //JSON TYPE EDIT [S]
@@ -128,7 +128,7 @@
     </script>
     </head>
 
-    <body onload="initTmap();">
+    <body onload="initTmap()">
         <h1>t0 반환 알고리즘</h1>
         <p>교통최적+최단시간 경로의 예상소요시간을 출력합니다</p>
 
@@ -146,9 +146,12 @@
 		<p id="result"></p>
         <br />
 
+<!--
+        <p>현위치</p>
         <button onclick="getLocation()">추적 시작</button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <button onclick="stopWatch()">추적 중단</button>
         <p id="location"></p>
+-->
     </body>
 </html>
