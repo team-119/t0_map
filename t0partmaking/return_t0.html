@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>return_t0</title>
+        <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script> <!--version2로 슬쩍수정-->
+        <script type="text/javascript">
+    /* t0반환 코드작성
+        환자-응급실별 t0 반환 (환자,응급실 순서대로 대응시키고 t0반환함수 호출하는 코드 작성할것)
+        반환한 t0 데이터베이스에 연결해주는 방법? 또는 바로 타임라인알고리즘에 넘겨주는 방법
+        배열형태로 반환해주는 방법
+        +(TIME: 검색시점시간 ETA:예상도착시간 ETE:예상소요시간)
+    */ 
+
+                var map;
+                var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
+                var a = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
+                var b = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
+                var c = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916};
+                var d = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
+                const hospital = [a, b, c, d];
+
+                function getLocation()  // 좌표 로딩, 지도중심변경, 현위치마커
+            {  
+                if(navigator.geolocation)
+                {
+                    navigator.geolocation.getCurrentPosition(function(position)
+                    {
+                        my.lat = position.coords.latitude;
+                        my.lon = position.coords.longitude;
+
+                        document.getElementById("location").innerHTML = // 위도경도 출력
+                        "Latitude: " + my.lat + "<br>" +
+                        "Longitude: " + my.lon;
+                        
+                        // 지도중심 변경
+                        map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
+
+                        // 현위치 마커 띄우기
+                        marker_s = new Tmapv2.Marker({
+                            position : new Tmapv2.LatLng(my.lat, my.lon),
+                            icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
+                            iconSize : new Tmapv2.Size(24, 38),
+                            map : map
+                        });
+
+                    }); // getCurrentPosition [E]
+
+                } // if(navigator.geolocation) [E]
+
+            }   // getLocation [E]
+
+
+                function Main() // 메인함수
+                {
+                    getLocation(); //현재 위도경도 로딩
+                    
+                    //var ETE = [0,0,0,0];
+                    //var ETA = [0,0,0,0];
+
+                    $("#btn_select")
+                        .click(
+                                function() {
+                                    getLocation();
+                                    var selectHospital = $("#selectHospital").val();
+
+                                    //JSON TYPE EDIT [S]
+                                    $ .ajax({
+                                        type : "POST",
+                                        url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
+                                        async : false,
+                                        data : {
+                                            "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
+                                            //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
+                                            "startX" : my.lon,
+                                            "startY" : my.lat,
+                                            //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
+                                            "endX" : hospital[selectHospital].lon,
+                                            "endY" : hospital[selectHospital].lat,
+                                            "reqCoordType" : "WGS84GEO", //좌표요청타입
+                                            "resCoordType" : "EPSG3857", //좌표반환타입
+                                            "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
+                                        },
+                                        success : function(response) {
+                                            
+                                            var resultData = response.features; // 경로요청 결과로딩
+                                            var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
+
+                                            var now = new Date(); // 현재시간 정보로딩              
+                                            var nowHour = now.getHours(); //현재시
+                                            var nowMinute = now.getMinutes(); //현재분
+
+                                            var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
+                                            var finalMinute = (nowMinute+totalTime)%60; //도착분
+
+                                            var TIME = " 현재시간 : " + nowHour + ":" + nowMinute + " /";
+                                            var ETE = " 예상소요시간(ETE) : " + totalTime + "분 /";
+                                            var ETA = " 예상도착시간(ETA) : " + finalHour + ":" + finalMinute;
+                                            
+                                            $("#result").text(TIME + ETE + ETA);
+                                        },
+                                        error : function(request, status, error) {
+                                            console.log("code:"
+                                                    + request.status + "\n"
+                                                    + "message:"
+                                                    + request.responseText
+                                                    + "\n" + "error:" + error);
+                                        }
+                                    });  //JSON TYPE EDIT [E]
+                                }); //function [E]
+                } // Main [E]
+
+    </script>
+    </head>
+
+    <body onload="Main()">
+        <h1>t0 반환 알고리즘</h1>
+        <p>교통최적+최단시간 경로의 예상소요시간을 출력합니다</p>
+
+		<div class="ft_area">
+
+
+            <select id="selectHospital">
+                <option value="0">[권역][외상]가톨릭대학교의정부성모병원</option>
+                <option value="1">[기관]경기도의료원의정부병원</option>
+                <option value="2">[기관]의료법인영동의료재단의정부백병원</option>
+                <option value="3">[기관]추병원</option>
+            </select>
+
+            <button id="btn_select">결과출력</button>
+		</div>
+	
+        <p id="result"></p>
+        <br />
+
+        <p>현위치</p>
+        <p id="location"></p>
+
+    </body>
+</html>
