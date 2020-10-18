@@ -3,14 +3,13 @@
     <head>
         <title>t0 + mapservice</title>
         <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-        <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script> <!--version2로 슬쩍수정-->
+        <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script>
         <script type="text/javascript">
     /* t0반환 코드작성
         환자-응급실별 t0 반환 (환자,응급실 순서대로 대응시키고 t0반환함수 호출하는 코드 작성할것)
         +(ETA:예상도착시간 ETE:예상소요시간)
        지도에 마커표시
-        지도 좌표 정확히 표시할 것
-        좌표, 마커좌표 옮기기
+        Q. 지도 현위치 좌표 getlocation 정확도향상 어떻게??
     */
             var map;
             var marker_s;
@@ -78,14 +77,6 @@
                         // 지도중심 변경
                         map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
                         marker_s.setPosition(new Tmapv2.LatLng(my.lat, my.lon));
-                        
-                        // 현위치 마커 좌표변경
-                        marker_s = new Tmapv2.Marker({
-                            position : new Tmapv2.LatLng(my.lat, my.lon),
-                            icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
-                            iconSize : new Tmapv2.Size(24, 38),
-                            map : map
-                        });
 
                     }); // getCurrentPosition [E]
 
