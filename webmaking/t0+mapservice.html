@@ -77,7 +77,7 @@
                         
                         // 지도중심 변경
                         map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
-                        //markerLayer.removeMarker(marker_s);
+                        marker_s.setPosition(new Tmapv2.LatLng(my.lat, my.lon));
                         
                         // 현위치 마커 좌표변경
                         marker_s = new Tmapv2.Marker({
