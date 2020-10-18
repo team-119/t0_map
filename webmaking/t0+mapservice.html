@@ -13,12 +13,54 @@
         좌표, 마커좌표 옮기기
     */
             var map;
+            var marker_s;
+            var marker_e = [];
             var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
-            var a = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
-            var b = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
-            var c = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916};
-            var d = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
-            const hospital = [a, b, c, d];
+            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
+            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
+            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916};
+            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
+            const hospital = [s, u, b, c];
+
+            function setMap()   // 지도 생성
+            {
+                map = new Tmapv2.Map("map_div", {
+                    center : new Tmapv2.LatLng(my.lat, my.lon),
+                    width : "100%",
+                    height : "400px",
+                    zoom : 15,
+                    zoomControl : true,
+                    scrollwheel : true
+                });
+
+            }   // setMap [E]
+
+            function setMarker()    // 마커 생성
+            {
+                // 현위치마커
+                marker_s = new Tmapv2.Marker({
+                            position : new Tmapv2.LatLng(my.lat, my.lon),
+                            icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
+                            iconSize : new Tmapv2.Size(24, 38),
+                            map : map
+                });
+
+                // 병원마커
+                for (var i = 0; i < 4; i++)
+                {
+                    //Marker 객체 생성.
+                    var marker = new Tmapv2.Marker({
+                                    title : hospital[i].name,
+                                    position : new Tmapv2.LatLng(hospital[i].lat, hospital[i].lon),
+                                    icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
+                                    iconSize : new Tmapv2.Size(24, 38),
+                                    map : map
+                                });
+                    marker.setMap(map); //Marker가 표시될 Map 설정.
+                    marker_e.push(marker);
+                }
+                
+            } // setMarker [E]
 
             function getLocation()  // 좌표 로딩, 지도중심변경, 현위치마커
             {  
@@ -35,8 +77,9 @@
                         
                         // 지도중심 변경
                         map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
-
-                        // 현위치 마커 띄우기
+                        //markerLayer.removeMarker(marker_s);
+                        
+                        // 현위치 마커 좌표변경
                         marker_s = new Tmapv2.Marker({
                             position : new Tmapv2.LatLng(my.lat, my.lon),
                             icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
@@ -50,61 +93,11 @@
 
             }   // getLocation [E]
 
-            function setMap()   // 지도 생성
-            {
-                map = new Tmapv2.Map("map_div", {
-                    center : new Tmapv2.LatLng(my.lat, my.lon),
-                    width : "100%",
-                    height : "400px",
-                    zoom : 15,
-                    zoomControl : true,
-                    scrollwheel : true
-                });
-
-            }   // setMap [E]
-
-            function setMarker()    // 병원마커
-            {
-                marker_e0 = new Tmapv2.Marker(
-						{
-							position : new Tmapv2.LatLng(hospital[0].lat, hospital[0].lon),
-							icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
-							iconSize : new Tmapv2.Size(24, 38),
-							map : map
-                        });
-                        
-                marker_e1 = new Tmapv2.Marker(
-                {
-                    position : new Tmapv2.LatLng(hospital[1].lat, hospital[1].lon),
-                    icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
-                    iconSize : new Tmapv2.Size(24, 38),
-                    map : map
-                });
-
-                marker_e2 = new Tmapv2.Marker(
-						{
-							position : new Tmapv2.LatLng(hospital[2].lat, hospital[2].lon),
-							icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
-							iconSize : new Tmapv2.Size(24, 38),
-							map : map
-						});
-
-                marker_e3 = new Tmapv2.Marker(
-                {
-                    position : new Tmapv2.LatLng(hospital[3].lat, hospital[3].lon),
-                    icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
-                    iconSize : new Tmapv2.Size(24, 38),
-                    map : map
-                });
-                
-            } // setMarker [E]
-
-
             function Main() {   // 메인함수
 
-                getLocation();  // 1. 좌표 로딩
-                setMap();       // 2. 지도 띄우기
-                setMarker();    // 3. 병원 마커 띄우기
+                setMap();       // 1. 지도 띄우기
+                setMarker();    // 2. 마커 생성
+                getLocation();  // 3. 좌표 로딩, 지도중심변경, 현위치마커
 
                 // 4. Tmap api 경로계산, 결과출력
                     $("#btn_select")
@@ -161,7 +154,7 @@
 
                             }); // .click [E]
 
-            }   // initTmap [E]
+            }   // Main [E]
                 
     </script>
     </head>
