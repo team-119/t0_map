@@ -15,10 +15,10 @@
             var marker_s;
             var marker_e = [];
             var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
-            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
-            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
-            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916};
-            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
+            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705, ETE: "", ETA: ""};
+            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525, ETE: "", ETA: ""};
+            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916, ETE: "", ETA: ""};
+            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260, ETE: "", ETA: ""};
             const hospital = [s, u, b, c];
 
             function setMap()   // 지도 생성
@@ -99,8 +99,15 @@
                             function() {
 
                                 getLocation();  // 좌표 업데이트
+                                var now = new Date(); // 현재시간 정보로딩              
+                                var nowHour = now.getHours(); //현재시
+                                var nowMinute = now.getMinutes(); //현재분
+                                var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
+
                                 var selectHospital = $("#selectHospital").val();  // 병원선택옵션 로딩
 
+                                for(var selectHospital=0; selectHospital<4; selectHospital++)
+                                {
                                 //JSON TYPE EDIT [S]
                                 $
                                     .ajax({
@@ -124,18 +131,12 @@
                                             var resultData = response.features; // 경로요청 결과로딩
                                             var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
 
-                                            var now = new Date(); // 현재시간 정보로딩              
-                                            var nowHour = now.getHours(); //현재시
-                                            var nowMinute = now.getMinutes(); //현재분
-
                                             var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
                                             var finalMinute = (nowMinute+totalTime)%60; //도착분
 
-                                            var TIME = " 현재시간 : " + nowHour + ":" + nowMinute + " /";
-                                            var ETE = " 예상소요시간(ETE) : " + totalTime + "분 /";
-                                            var ETA = " 예상도착시간(ETA) : " + finalHour + ":" + finalMinute;
+                                            hospital[selectHospital].ETE = totalTime;
+                                            hospital[selectHospital].ETA = finalHour + ":" + finalMinute;
                                             
-                                            $("#result").text(TIME + ETE + ETA);    // 결과출력
                                         },
                                         error : function(request, status, error) {
                                             console.log("code:"
@@ -145,6 +146,14 @@
                                                     + "\n" + "error:" + error);
                                         }
                                     }); // .ajax [E]  JSON TYPE EDIT [E]
+                                    }   // for [E]
+
+                            $("#TIME").text(TIME)
+                            $("#result0").text(hospital[0].ETE + "//" + hospital[0].ETA)
+                            $("#result1").text(hospital[1].ETE + "//" + hospital[1].ETA)               
+                            $("#result2").text(hospital[2].ETE + "//" + hospital[2].ETA)
+                            $("#result3").text(hospital[3].ETE + "//" + hospital[3].ETA)                
+                            // 결과출력
 
                             }); // .click [E]
 
@@ -158,18 +167,15 @@
         <p>user_input에서 현위치 바탕으로 지도서비스 제공</p>
         <p>교통최적+최단시간 경로의 예상소요시간을 출력합니다</p>
 
-		<div class="ft_area">
-            <select id="selectHospital">
-                <option value="0">[권역][외상]가톨릭대학교의정부성모병원</option>
-                <option value="1">[기관]경기도의료원의정부병원</option>
-                <option value="2">[기관]의료법인영동의료재단의정부백병원</option>
-                <option value="3">[기관]추병원</option>
-            </select>
-            
+		<div class="ft_area">            
             <button id="btn_select">결과출력</button>
 		</div>
-	
-		<p id="result"></p>
+    
+        <p id="TIME"></p>
+        <p id="result0"></p>
+        <p id="result1"></p>
+        <p id="result2"></p>
+        <p id="result3"></p>
         <br />
 
         <div id="map_div"></div>
