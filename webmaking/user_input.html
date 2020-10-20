@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EMERSERVICE input</title>
+    </head>
+
+    <body>
+        <h1>EMERSERVICE</h1>
+        <h2>응급환자정보입력</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div> <!--전체 체크리스트 [S]-->
+                <!-- 응급도정보 [S]-->																		
+                <div class="emer-table">
+                    <h2 style="padding: 7px; font-size: 15px;">
+                        <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;응급도
+                            
+                            
+                        
+                        &nbsp;&nbsp;
+                        <input type="checkbox" class="allchk_emer" id="emer_all">
+                        <label for="emer_all" style="font-size: 13px">전체선택</label>
+                    </h2>
+                    <table>
+                        <colgroup>
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                        </colgroup>
+    
+                            <tbody>
+                                
+                                <tr>
+
+                                    <td>
+                                        <input type="checkbox" id="label_emer0" name="emer" class="width_90 svdss_cd" value="emer0"> <!--선택X-->
+                                        <label for="label_emer0">선택안함</label>
+                                    </td>
+
+
+                                    <td>
+                                        <input type="checkbox" id="label_emer1" name="emer" class="width_90 svdss_cd" value="emer1">
+                                        <label for="label_emer1">긴급</label>
+                                    </td>
+                                                                
+                                                                                                                    
+                                    <td>
+                                        <input type="checkbox" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
+                                        <label for="label_emer2">응급</label>
+                                    </td>
+                                    
+                                    
+                                    <td>
+                                        <input type="checkbox" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3">
+                                        <label for="label_emer3">비응급</label>
+                                    </td>
+                                
+                                                                            
+                                    <td>&nbsp;</td>
+                                                                                                                                    
+                            
+                        
+                        
+                                </tr></tbody>
+                    </table>
+                                    
+
+                </div>
+                <!--  응급도정보 [E]-->
+                
+
+                <!-- 필요한병상정보 [S]-->																		
+                <div class="bed-table">
+                    <h2 style="padding: 7px; font-size: 15px;">
+                        <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;실시간병상정보
+                            
+                            
+                        
+                        &nbsp;&nbsp;
+                        <input type="checkbox" class="allchk_bed" id="bed_all">
+                        <label for="bed_all" style="font-size: 13px">전체선택</label>
+                    </h2>
+                    <table>
+                        <colgroup>
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                        </colgroup>
+    
+                        <tbody>
+                            
+                            <tr class="diffColor">                                                                  
+                                <td>
+                                    <input type="checkbox" id="label_bed0" name="bed" class="width_90 svdss_cd" value="bed0">
+                                    <label for="label_bed0">선택안함</label>
+                                </td>
+                                                            
+                                                                                                                
+                                <td>
+                                    <input type="checkbox" id="label_bed1" name="bed" class="width_90 svdss_cd" value="bed1">
+                                    <label for="label_bed1">[응급실] 일반</label>
+                                </td>                                    
+                                                                                                       
+                                <td>&nbsp;</td>
+                                                                                                                                                                
+                            </tr></tbody>
+                    </table>
+                                
+                </div>
+                <!--  필요한병상정보 [E]-->
+
+
+                <!-- 중증응급질환정보 [S]-->
+                <div class="disease-table">
+                    <h2 style="padding: 7px; font-size: 15px;"> 
+                        <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;중증응급질환정보
+                        <span style="font-size: 11px; font-weight: 500; margin:5px 0 0 0;">
+                            
+                            
+                        </span>
+                        &nbsp;&nbsp;
+                        <input type="checkbox" class="allchk_dis" id="dis_all">
+                        <label for="dis_all" style="font-size: 13px">전체선택</label>
+                    </h2>
+                    <table>
+                        <colgroup>
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                        </colgroup>
+
+                        <tbody>
+                            
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="label_dis1" name="disease" class="width_90 svdss_cd" value="dis1">
+                                        <label for="label_dis1">[재관류중재술] 심근경색</label>
+                                    </td>
+                                                                
+                                                                                                                    
+                                    <td>
+                                        <input type="checkbox" id="label_dis2" name="disease" class="width_90 svdss_cd" value="dis2">
+                                        <label for="label_dis2">[재관류중재술] 뇌경색</label>
+                                    </td>
+                                    
+                                                                                                                    
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis3" name="disease" class="width_90 svdss_cd" value="dis3">
+                                        <label for="label_dis3">[뇌출혈수술] 거미막하출혈</label>
+                                    </td>
+                                                                
+                                                            
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis4" name="disease" class="width_90 svdss_cd" value="dis4">
+                                        <label for="label_dis4">[뇌출혈수술] 거미막하출혈외</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                
+                            
+                                <tr class="diffColor">
+                                    <td>
+                                        <input type="checkbox" id="label_dis5" name="disease" class="width_90 svdss_cd" value="dis5">
+                                        <label for="label_dis5">[대동맥응급] 흉부</label>
+                                    </td>
+                                    
+                                
+                                                                                                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis6" name="disease" class="width_90 svdss_cd" value="dis6">
+                                        <label for="label_dis6">[대동맥응급] 복부</label>
+                                    </td>
+                                                                                                                                
+                            
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis7" name="disease" class="width_90 svdss_cd" value="dis7">
+                                        <label for="label_dis7">[담낭담관질환] 담낭질환</label>
+                                    </td>
+                                    
+                                
+                                                                                                                    
+                                    <td>
+                                        <input type="checkbox" id="label_dis8" name="disease" class="width_90 svdss_cd" value="dis8">
+                                        <label for="label_dis8">[담낭담관질환] 담도포함질환</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                
+                            
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="label_dis9" name="disease" class="width_90 svdss_cd" value="dis9">
+                                        <label for="label_dis9">[복부응급수술] 비외상</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="checkbox" id="label_dis10" name="disease" class="width_90 svdss_cd" value="dis10">
+                                        <label for="label_dis10">[장중첩/폐색] 영유아</label>
+                                    </td>
+                                                                                                                                
+                            
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis11" name="disease" class="width_90 svdss_cd" value="dis11">
+                                        <label for="label_dis11">[사지접합의수술] 수족지접합</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="checkbox" id="label_dis12" name="disease" class="width_90 svdss_cd" value="dis12">
+                                        <label for="label_dis12">[사지접합의수술] 수족지접합외</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                
+                            
+                                <tr class="diffColor">
+                                    <td>
+                                        <input type="checkbox" id="label_dis13" name="disease" class="width_90 svdss_cd" value="dis13">
+                                        <label for="label_dis13">[위장관응급내시경] 성인</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="checkbox" id="label_dis14" name="disease" class="width_90 svdss_cd" value="dis14">
+                                        <label for="label_dis14">[위장관응급내시경] 영유아</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="checkbox" id="label_dis15" name="disease" class="width_90 svdss_cd" value="dis15">
+                                        <label for="label_dis15">[기관지응급내시경] 성인</label>
+                                    </td>
+                                    
+                                
+                                                                                                                    
+                                    <td>
+                                        <input type="checkbox" id="label_dis16" name="disease" class="width_90 svdss_cd" value="dis16">
+                                        <label for="label_dis16">[기관지응급내시경] 영유아</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                
+                            
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="label_dis17" name="disease" class="width_90 svdss_cd" value="dis17">
+                                        <label for="label_dis17">[산부인과응급] 분만</label>
+                                    </td>
+                                    
+                                
+                                                                                        
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis18" name="disease" class="width_90 svdss_cd" value="dis18">
+                                        <label for="label_dis18">[산부인과응급] 산과수술</label>
+                                    </td>
+                                                                                                                                
+                            
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis19" name="disease" class="width_90 svdss_cd" value="dis19">
+                                        <label for="label_dis19">[산부인과응급] 부인과수술</label>
+                                    </td>
+                                    
+                                
+                                                                                        
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis20" name="disease" class="width_90 svdss_cd" value="dis20">
+                                        <label for="label_dis20">[안과적응급수술]</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                
+                            
+                                <tr class="diffColor">
+                                    <td>
+                                        <input type="checkbox" id="label_dis21" name="disease" class="width_90 svdss_cd" value="dis21">
+                                        <label for="label_dis21">[응급투석] HD</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="checkbox" id="label_dis22" name="disease" class="width_90 svdss_cd" value="dis22">
+                                        <label for="label_dis22">[응급투석] CRRT</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="checkbox" id="label_dis23" name="disease" class="width_90 svdss_cd" value="dis23">
+                                        <label for="label_dis23">[영상의학혈관중재] 성인</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="checkbox" id="label_dis24" name="disease" class="width_90 svdss_cd" value="dis24">
+                                        <label for="label_dis24">[영상의학혈관중재] 영유아</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                
+                            
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="label_dis25" name="disease" class="width_90 svdss_cd" value="dis25">
+                                        <label for="label_dis25">[정신과적 응급] 폐쇄병동입원</label>
+                                    </td>
+                                    
+                                
+                                                                                        
+                                
+                                    <td>
+                                        <input type="checkbox" id="label_dis26" name="disease" class="width_90 svdss_cd" value="dis26">
+                                        <label for="label_dis26">[중증화상]</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="checkbox" id="label_dis27" name="disease" class="width_90 svdss_cd" value="dis27">
+                                        <label for="label_dis27">[저출생체중아]</label>
+                                    </td>
+                                    
+                                        
+                                            <td>&nbsp;</td>
+                                                                                                                                        
+                                
+                            
+                        </tr></tbody>
+                    </table>
+                </div>
+                <!-- 중증응급질환정보 [E]-->
+            </div> <!--전체 체크리스트 [E]-->
+
+            <p><input type="submit" value="Submit"> <input type="reset" value="Reset"></p>
+
+        </form>
+
+
+    </body>
+</html>

@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="http://portal.nemc.or.kr/css/reset.css" type="text/css">
+    <link rel="stylesheet" href="http://portal.nemc.or.kr/css/buttons.css" type="text/css">
+    <link rel="stylesheet" href="http://portal.nemc.or.kr/css/medi_info/dashboards/dash_total_emer_org_popup.css" type="text/css">
+    <link rel="stylesheet" href="http://portal.nemc.or.kr/css/medi_info/dashboards/dash_total_emer_org_popup_new.css" type="text/css">
+    <link rel="stylesheet" href="http://portal.nemc.or.kr/css/medi_info/dashboards/dash_total_emer_org_popup_new_white.css" type="text/css">
+    
+    
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/common.js"></script>
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/jquery-ui-1.10.3.js"></script>
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/jsutil.js"></script>
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/medi_info/dashboards/dash_total_emer_org_popup_new.js"></script>
+    <script type="text/javascript" src="http://portal.nemc.or.kr/js/common/emog_map_popup.js"></script>
+    
+    <title>egen reference</title>
+    </head>
+
+
+<body style>
+
+    <!--상단부 내용-->
+    <div>
+        
+        <table class="main-dashborad-table">
+            <colgroup>
+                <col width="35%">
+                <col width="30%">
+                <col width="35%">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td rowspan="2">
+                        <p style="padding-left:3px;">
+                        <span class="span_h" style="font-size: 11px; font-weight: 900;">
+                        <span style="color:#b2becc !important;">●</span> 
+                        병상 : 가용병상수/기준병상수, 장비 : 가용유무/보유대수
+                        </span>
+                        </p>
+                        
+                        <p style="padding-left:3px;">
+                            <span class="time_container">
+                                <span class="time_item"><span style="color:green">● </span>&nbsp;4시간 이내</span>
+                                <span class="time_item"><span style="color:yellow">● </span>&nbsp;4~6시간&nbsp;</span>
+                                <span class="time_item"><span style="color:orange">● </span>&nbsp;6~8시간&nbsp;</span>
+                                <span class="time_item"><span style="color:red">● </span>&nbsp;8시간 초과 &nbsp;</span>
+                            </span>
+                        </p>
+                    </td>							
+                    <td class="main-dashboard" style="text-align: center">종합상황판</td>
+                    <td style="text-align: right;">
+                        <p style="padding-left:3px;">
+                            <span class="span_h" style="font-size: 11px; font-weight: 900;">
+                                메시지 : &nbsp;
+                                <label><input type="radio" name="spreadAllMsg" id="allClose" value="allClose" checked="checked">&nbsp;접기</label>
+                                &nbsp;&nbsp;
+                                <label><input type="radio" name="spreadAllMsg" id="allSpread" value="allSpread">&nbsp;펼치기</label>
+                            </span>
+                        </p>
+                        <p style="padding-left:3px;">
+                            <span class="span_h" style="font-size: 11px; font-weight: 900;">
+                                테마 : &nbsp;
+                                <label><input type="radio" name="theme" value="BLACK" checked="checked">&nbsp;다크</label>
+                                &nbsp;&nbsp;
+                                <label><input type="radio" name="theme" value="WHITE">&nbsp;라이트</label>
+                                
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center">2020-10-18 / 오후 8:31</td>
+                    <td style="text-align: right; font-weight: 900;">
+                        
+                        
+                            실시간 정보갱신 간격 (60분)
+                            <select id="refresh_time" style="background-color: rgb(22,26,37);color: white;border-color: rgb(58,77,109);height: 20px; display: none;">										
+                                <option value="60" selected="">60분</option>
+                            </select>
+                        
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+
+<!--체크리스트 PART-->
+    <div>
+																		
+        <div class="real-table">
+            <h2 style="padding: 7px; font-size: 15px;">
+                <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;실시간병상정보
+                    
+                    
+                
+                &nbsp;&nbsp;
+                <input type="checkbox" class="allchk_bed" id="rltm_all">
+                <label for="rltm_all" style="font-size: 13px">전체선택</label>
+            </h2>
+            <table>
+            <colgroup>
+                
+                    <col width="25.0%">
+                
+                    <col width="25.0%">
+                
+                    <col width="25.0%">
+                
+                    <col width="25.0%">
+                
+            </colgroup>
+                <tbody>
+                    
+                    
+                    
+                        <tr class="diffColor">
+                            <td>
+                                
+                                <input type="checkbox" id="label_O001" name="rltmCd" class="width_90 rltm_cd" value="O001">
+                                <label for="label_O001">[응급실] 일반</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O002" name="rltmCd" class="width_90 rltm_cd" value="O002">
+                                <label for="label_O002">[응급실] 소아</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O003" name="rltmCd" class="width_90 rltm_cd" value="O003">
+                                <label for="label_O003">[응급실] 음압격리</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O004" name="rltmCd" class="width_90 rltm_cd" value="O004">
+                                <label for="label_O004">[응급실] 일반격리</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                
+                                <input type="checkbox" id="label_O048" name="rltmCd" class="width_90 rltm_cd" value="O048">
+                                <label for="label_O048">[소아] 음압격리</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O049" name="rltmCd" class="width_90 rltm_cd" value="O049">
+                                <label for="label_O049">[소아] 일반격리</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O046" name="rltmCd" class="width_90 rltm_cd" value="O046">
+                                <label for="label_O046">[격리진료구역] 음압격리</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O047" name="rltmCd" class="width_90 rltm_cd" value="O047">
+                                <label for="label_O047">[격리진료구역] 일반격리</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                
+                                <input type="checkbox" id="label_O005" name="rltmCd" class="width_90 rltm_cd" value="O005">
+                                <label for="label_O005">[응급전용] 중환자실</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O019" name="rltmCd" class="width_90 rltm_cd" value="O019">
+                                <label for="label_O019">[응급전용] 입원실</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O010" name="rltmCd" class="width_90 rltm_cd" value="O010">
+                                <label for="label_O010">[소아 응급전용] 중환자실</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O020" name="rltmCd" class="width_90 rltm_cd" value="O020">
+                                <label for="label_O020">[소아 응급전용] 입원실</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr>
+                            <td>
+                                
+                                <input type="checkbox" id="label_O017" name="rltmCd" class="width_90 rltm_cd" value="O017">
+                                <label for="label_O017">[중환자실] 일반</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O006" name="rltmCd" class="width_90 rltm_cd" value="O006">
+                                <label for="label_O006">[중환자실] 내과</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O007" name="rltmCd" class="width_90 rltm_cd" value="O007">
+                                <label for="label_O007">[중환자실] 외과</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O009" name="rltmCd" class="width_90 rltm_cd" value="O009">
+                                <label for="label_O009">[중환자실] 소아</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr>
+                            <td>
+                                
+                                <input type="checkbox" id="label_O015" name="rltmCd" class="width_90 rltm_cd" value="O015">
+                                <label for="label_O015">[중환자실] 심장내과</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O011" name="rltmCd" class="width_90 rltm_cd" value="O011">
+                                <label for="label_O011">[중환자실] 신경과</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O012" name="rltmCd" class="width_90 rltm_cd" value="O012">
+                                <label for="label_O012">[중환자실] 신경외과</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O016" name="rltmCd" class="width_90 rltm_cd" value="O016">
+                                <label for="label_O016">[중환자실] 흉부외과</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr>
+                            <td>
+                                
+                                <input type="checkbox" id="label_O008" name="rltmCd" class="width_90 rltm_cd" value="O008">
+                                <label for="label_O008">[중환자실] 신생아</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O014" name="rltmCd" class="width_90 rltm_cd" value="O014">
+                                <label for="label_O014">[중환자실] 외상</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O013" name="rltmCd" class="width_90 rltm_cd" value="O013">
+                                <label for="label_O013">[중환자실] 화상</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O018" name="rltmCd" class="width_90 rltm_cd" value="O018">
+                                <label for="label_O018">[중환자실] 음압격리</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                
+                                <input type="checkbox" id="label_O038" name="rltmCd" class="width_90 rltm_cd" value="O038">
+                                <label for="label_O038">[입원실] 일반</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O025" name="rltmCd" class="width_90 rltm_cd" value="O025">
+                                <label for="label_O025">[입원실] 음압격리</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O021" name="rltmCd" class="width_90 rltm_cd" value="O021">
+                                <label for="label_O021">[입원실] 외상전용</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O024" name="rltmCd" class="width_90 rltm_cd" value="O024">
+                                <label for="label_O024">정신과 폐쇄병동</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                
+                                <input type="checkbox" id="label_O022" name="rltmCd" class="width_90 rltm_cd" value="O022">
+                                <label for="label_O022">[수술실]</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O023" name="rltmCd" class="width_90 rltm_cd" value="O023">
+                                <label for="label_O023">[수술실] 외상전용</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O026" name="rltmCd" class="width_90 rltm_cd" value="O026">
+                                <label for="label_O026">[분만실]</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O036" name="rltmCd" class="width_90 rltm_cd" value="O036">
+                                <label for="label_O036">화상전용처치실</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr>
+                            <td>
+                                
+                                <input type="checkbox" id="label_O030" name="rltmCd" class="width_90 rltm_cd" value="O030">
+                                <label for="label_O030">[인공호흡기]</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O031" name="rltmCd" class="width_90 rltm_cd" value="O031">
+                                <label for="label_O031">[인공호흡기] 조산아</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O032" name="rltmCd" class="width_90 rltm_cd" value="O032">
+                                <label for="label_O032">인큐베이터</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr>
+                            <td>
+                                
+                                <input type="checkbox" id="label_O033" name="rltmCd" class="width_90 rltm_cd" value="O033">
+                                <label for="label_O033">CRRT</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O034" name="rltmCd" class="width_90 rltm_cd" value="O034">
+                                <label for="label_O034">ECMO</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O035" name="rltmCd" class="width_90 rltm_cd" value="O035">
+                                <label for="label_O035">중심체온조절유도기</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O037" name="rltmCd" class="width_90 rltm_cd" value="O037">
+                                <label for="label_O037">고압산소치료기</label>
+                                
+                            </td>
+                            
+                        </tr>
+                        
+                    
+                        <tr>
+                            <td>
+                                
+                                <input type="checkbox" id="label_O027" name="rltmCd" class="width_90 rltm_cd" value="O027">
+                                <label for="label_O027">CT</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O028" name="rltmCd" class="width_90 rltm_cd" value="O028">
+                                <label for="label_O028">MRI</label>
+                                
+                            </td>
+                            
+                        
+                        
+                    
+                        
+                            <td>
+                                
+                                <input type="checkbox" id="label_O029" name="rltmCd" class="width_90 rltm_cd" value="O029">
+                                <label for="label_O029">혈관촬영기</label>
+                                
+                            </td>
+                            
+                                
+                                    <td>&nbsp;</td>
+                                
+                            
+                        
+                        
+                    
+                    </tr></tbody>
+            </table>
+        </div>
+        <!-- 중증응급질환정보 -->
+        <div class="disease-table">
+            <h2 style="padding: 7px; font-size: 15px;"> 
+                <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;중증응급질환정보
+                <span style="font-size: 11px; font-weight: 500; margin:5px 0 0 0;">
+                    
+                    
+                </span>
+                &nbsp;&nbsp;
+                <input type="checkbox" class="allchk_sv" id="svd_all">
+                <label for="svd_all" style="font-size: 13px">전체선택</label>
+            </h2>
+            <table>
+            <colgroup>
+                
+                    <col width="25.0%">
+                
+                    <col width="25.0%">
+                
+                    <col width="25.0%">
+                
+                    <col width="25.0%">
+                
+            </colgroup>
+                <tbody>
+                    <tr class="diffColor">
+                        
+                    </tr>
+                    
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="label_Y0010" name="svdssCd" class="width_90 svdss_cd" value="Y0010">
+                                <label for="label_Y0010">[재관류중재술] 심근경색</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0020" name="svdssCd" class="width_90 svdss_cd" value="Y0020">
+                                <label for="label_Y0020">[재관류중재술] 뇌경색</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0031" name="svdssCd" class="width_90 svdss_cd" value="Y0031">
+                                <label for="label_Y0031">[뇌출혈수술] 거미막하출혈</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0032" name="svdssCd" class="width_90 svdss_cd" value="Y0032">
+                                <label for="label_Y0032">[뇌출혈수술] 거미막하출혈외</label>
+                            </td>
+                            
+                        </tr>
+                    
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                <input type="checkbox" id="label_Y0041" name="svdssCd" class="width_90 svdss_cd" value="Y0041">
+                                <label for="label_Y0041">[대동맥응급] 흉부</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0042" name="svdssCd" class="width_90 svdss_cd" value="Y0042">
+                                <label for="label_Y0042">[대동맥응급] 복부</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0051" name="svdssCd" class="width_90 svdss_cd" value="Y0051">
+                                <label for="label_Y0051">[담낭담관질환] 담낭질환</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0052" name="svdssCd" class="width_90 svdss_cd" value="Y0052">
+                                <label for="label_Y0052">[담낭담관질환] 담도포함질환</label>
+                            </td>
+                            
+                        </tr>
+                    
+                        
+                    
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="label_Y0060" name="svdssCd" class="width_90 svdss_cd" value="Y0060">
+                                <label for="label_Y0060">[복부응급수술] 비외상</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0070" name="svdssCd" class="width_90 svdss_cd" value="Y0070">
+                                <label for="label_Y0070">[장중첩/폐색] 영유아</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0131" name="svdssCd" class="width_90 svdss_cd" value="Y0131">
+                                <label for="label_Y0131">[사지접합의수술] 수족지접합</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0132" name="svdssCd" class="width_90 svdss_cd" value="Y0132">
+                                <label for="label_Y0132">[사지접합의수술] 수족지접합외</label>
+                            </td>
+                            
+                        </tr>
+                    
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                <input type="checkbox" id="label_Y0081" name="svdssCd" class="width_90 svdss_cd" value="Y0081">
+                                <label for="label_Y0081">[위장관응급내시경] 성인</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0082" name="svdssCd" class="width_90 svdss_cd" value="Y0082">
+                                <label for="label_Y0082">[위장관응급내시경] 영유아</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0091" name="svdssCd" class="width_90 svdss_cd" value="Y0091">
+                                <label for="label_Y0091">[기관지응급내시경] 성인</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0092" name="svdssCd" class="width_90 svdss_cd" value="Y0092">
+                                <label for="label_Y0092">[기관지응급내시경] 영유아</label>
+                            </td>
+                            
+                        </tr>
+                    
+                        
+                    
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="label_Y0111" name="svdssCd" class="width_90 svdss_cd" value="Y0111">
+                                <label for="label_Y0111">[산부인과응급] 분만</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0112" name="svdssCd" class="width_90 svdss_cd" value="Y0112">
+                                <label for="label_Y0112">[산부인과응급] 산과수술</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0113" name="svdssCd" class="width_90 svdss_cd" value="Y0113">
+                                <label for="label_Y0113">[산부인과응급] 부인과수술</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0160" name="svdssCd" class="width_90 svdss_cd" value="Y0160">
+                                <label for="label_Y0160">[안과적응급수술]</label>
+                            </td>
+                            
+                        </tr>
+                    
+                        
+                    
+                        <tr class="diffColor">
+                            <td>
+                                <input type="checkbox" id="label_Y0141" name="svdssCd" class="width_90 svdss_cd" value="Y0141">
+                                <label for="label_Y0141">[응급투석] HD</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0142" name="svdssCd" class="width_90 svdss_cd" value="Y0142">
+                                <label for="label_Y0142">[응급투석] CRRT</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0171" name="svdssCd" class="width_90 svdss_cd" value="Y0171">
+                                <label for="label_Y0171">[영상의학혈관중재] 성인</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0172" name="svdssCd" class="width_90 svdss_cd" value="Y0172">
+                                <label for="label_Y0172">[영상의학혈관중재] 영유아</label>
+                            </td>
+                            
+                        </tr>
+                    
+                        
+                    
+                        <tr>
+                            <td>
+                                <input type="checkbox" id="label_Y0150" name="svdssCd" class="width_90 svdss_cd" value="Y0150">
+                                <label for="label_Y0150">[정신과적 응급] 폐쇄병동입원</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0120" name="svdssCd" class="width_90 svdss_cd" value="Y0120">
+                                <label for="label_Y0120">[중증화상]</label>
+                            </td>
+                            
+                        
+                    
+                        
+                    
+                        
+                            <td>
+                                <input type="checkbox" id="label_Y0100" name="svdssCd" class="width_90 svdss_cd" value="Y0100">
+                                <label for="label_Y0100">[저출생체중아]</label>
+                            </td>
+                            
+                                
+                                    <td>&nbsp;</td>
+                                
+                            
+                        
+                    
+                        
+                    
+                </tr></tbody>
+            </table>
+        </div>
+        <!-- 중증응급질환정보 -->
+    </div>
+
+</body>
+-->
+</html>
