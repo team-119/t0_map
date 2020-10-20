@@ -2,14 +2,167 @@
 <html>
     <head>
         <title>EMERSERVICE input</title>
+        <title>t0 + mapservice</title>
+        <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script>
+        <script type="text/javascript">
+
+            var map;
+            var marker_s;
+            var marker_e = [];
+            var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
+            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705, ETE: "", ETA: ""};
+            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525, ETE: "", ETA: ""};
+            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916, ETE: "", ETA: ""};
+            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260, ETE: "", ETA: ""};
+            const hospital = [s, u, b, c];
+
+            function setMap()   // 지도 생성
+            {
+                map = new Tmapv2.Map("map_div", {
+                    center : new Tmapv2.LatLng(my.lat, my.lon),
+                    width : "50%",
+                    height : "400px",
+                    zoom : 15,
+                    zoomControl : true,
+                    scrollwheel : true
+                });
+
+            }   // setMap [E]
+
+            function setMarker()    // 마커 생성
+            {
+                // 현위치마커
+                marker_s = new Tmapv2.Marker({
+                            position : new Tmapv2.LatLng(my.lat, my.lon),
+                            icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png",
+                            iconSize : new Tmapv2.Size(24, 38),
+                            map : map
+                });
+
+                // 병원마커
+                for (var i = 0; i < 4; i++)
+                {
+                    //Marker 객체 생성.
+                    var marker = new Tmapv2.Marker({
+                                    title : hospital[i].name,
+                                    position : new Tmapv2.LatLng(hospital[i].lat, hospital[i].lon),
+                                    icon : "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png",
+                                    iconSize : new Tmapv2.Size(24, 38),
+                                    map : map
+                                });
+                    marker.setMap(map); //Marker가 표시될 Map 설정.
+                    marker_e.push(marker);
+                }
+                
+            } // setMarker [E]
+
+            function getLocation()  // 좌표 로딩, 지도중심변경, 현위치마커
+            {  
+                if(navigator.geolocation)
+                {
+                    navigator.geolocation.getCurrentPosition(function(position)
+                    {
+                        my.lat = position.coords.latitude;
+                        my.lon = position.coords.longitude;
+
+                        document.getElementById("location").innerHTML = // 위도경도 출력
+                        "Latitude: " + my.lat + "<br>" +
+                        "Longitude: " + my.lon;
+                        
+                        // 지도중심 변경
+                        map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
+
+                        // 현위치마커 변경
+                        marker_s.setPosition(new Tmapv2.LatLng(my.lat, my.lon));
+
+                    }); // getCurrentPosition [E]
+
+                } // if(navigator.geolocation) [E]
+
+            }   // getLocation [E]
+
+            function Main() {   // 메인함수
+
+                setMap();       // 1. 지도 띄우기
+                setMarker();    // 2. 마커 생성
+                getLocation();  // 3. 좌표 로딩, 지도중심변경, 현위치마커
+
+                // 4. Tmap api 경로계산, 결과출력
+                    $("#btn_select")
+                        .click(
+                            function() {
+
+                                getLocation();  // 좌표 업데이트
+                                var now = new Date(); // 현재시간 정보로딩              
+                                var nowHour = now.getHours(); //현재시
+                                var nowMinute = now.getMinutes(); //현재분
+                                var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
+
+                                for(var selectHospital=0; selectHospital<4; selectHospital++)
+                                {
+                                
+                                //JSON TYPE EDIT [S]
+                                $
+                                    .ajax({
+                                        type : "POST",
+                                        url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result",
+                                        async : false,
+                                        data : {
+                                            "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
+                                            //경로요청 시작점좌표
+                                            "startX" : my.lon,
+                                            "startY" : my.lat,
+                                            //경로요청 끝점좌표
+                                            "endX" : hospital[selectHospital].lon,
+                                            "endY" : hospital[selectHospital].lat,
+                                            "reqCoordType" : "WGS84GEO", //좌표요청타입
+                                            "resCoordType" : "EPSG3857", //좌표반환타입
+                                            "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
+                                        },
+                                        success : function(response) {
+                                            
+                                            var resultData = response.features; // 경로요청 결과로딩
+                                            var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
+
+                                            var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
+                                            var finalMinute = (nowMinute+totalTime)%60; //도착분
+
+                                            hospital[selectHospital].ETE = totalTime;
+                                            hospital[selectHospital].ETA = finalHour + ":" + finalMinute;
+                                            
+                                        },
+                                        error : function(request, status, error) {
+                                            console.log("code:"
+                                                    + request.status + "\n"
+                                                    + "message:"
+                                                    + request.responseText
+                                                    + "\n" + "error:" + error);
+                                        }
+                                    }); // .ajax [E]  JSON TYPE EDIT [E]   
+                                    
+                                }   // for [E]
+
+                            $("#TIME").text(TIME)
+                            $("#result0").text(hospital[0].ETE + "//" + hospital[0].ETA)
+                            $("#result1").text(hospital[1].ETE + "//" + hospital[1].ETA)               
+                            $("#result2").text(hospital[2].ETE + "//" + hospital[2].ETA)
+                            $("#result3").text(hospital[3].ETE + "//" + hospital[3].ETA)                
+                            // 결과출력
+
+                            }); // .click [E]
+
+            }   // Main [E]
+                
+        </script>
     </head>
 
-    <body>
+    <body onload="Main()">
+
         <h1>EMERSERVICE</h1>
         <h2>응급환자정보입력</h2>
 
-        <form method="POST">
-            {% csrf_token %}
+        <form action = "/{{patient.id}}/user_ouput" method="POST"></form>
 
             <div> <!--전체 체크리스트 [S]-->
                 <!-- 응급도정보 [S]-->																		
@@ -378,14 +531,19 @@
         </form>
 
 
-        <p id="result"></p>
-        <br />
+        <div class="ft_area">            
+            <button id="btn_select">결과출력</button>
+                <p id="TIME"></p>
+                <p id="result0"></p>
+                <p id="result1"></p>
+                <p id="result2"></p>
+                <p id="result3"></p>
+        </div>    
 
         <div id="map_div"></div>
 
         <p>현위치</p>
         <p id="location"></p>
-
 
     </body>
 
