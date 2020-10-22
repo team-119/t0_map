@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>EMERSERVICE input</title>
-        
+        <meta charset="utf-8"/>
         <style>
             html { font-size: 10px; }
             h1 { font-size: 4rem; }
@@ -96,6 +96,60 @@
             }   // getLocation [E]
 
 
+            function sleep(selectHospital, thisDelay, end) {
+                if (selectHospital == end) {
+                    $("#TIME").text(TIME)
+                    return true;
+                }
+
+                var now = new Date(); // 현재시간 정보로딩              
+                var nowHour = now.getHours(); //현재시
+                var nowMinute = now.getMinutes(); //현재분
+                var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
+
+                setTimeout(function() {
+                    console.log("Timeout : " + selectHospital);
+                    $ .ajax({
+                        type : "POST",
+                        url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
+                        async : false,
+                        timeout : 510,
+                        data : {
+                            "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
+                            //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
+                            "startX" : my.lon,
+                            "startY" : my.lat,
+                            //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
+                            "endX" : hospital[selectHospital].lon,
+                            "endY" : hospital[selectHospital].lat,
+                            "reqCoordType" : "WGS84GEO", //좌표요청타입
+                            "resCoordType" : "EPSG3857", //좌표반환타입
+                            "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
+                        },
+                        success : function(response) {
+                            
+                            var resultData = response.features; // 경로요청 결과로딩
+                            var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
+
+                            var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
+                            var finalMinute = (nowMinute+totalTime)%60; //도착분
+
+                            ETE[selectHospital] = totalTime;
+                            ETA[selectHospital] = finalHour + ":" + finalMinute;
+                            $("#result"+selectHospital).text(ETE[selectHospital] + "//" + ETA[selectHospital]);
+                        },
+                        error : function(request, status, error) {
+                            console.log("code:"
+                                    + request.status + "\n"
+                                    + "message:"
+                                    + request.responseText
+                                    + "\n" + "error:" + error);
+                        }
+                    });
+                    sleep(selectHospital+1, thisDelay, end);
+                }, thisDelay);
+            }
+
             function Main() {   // 메인함수
 
                 setMap();       // 1. 지도 띄우기
@@ -114,46 +168,49 @@
                                 var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
 
 
+                                sleep(0, 2000, 4);
+
                                 // 1) 병원별 ETE ETA 계산 및 저장
                                 for(var selectHospital=0; selectHospital<4; selectHospital++)
                                 {
+                                    
                                 //JSON TYPE EDIT [S]
-                                $ .ajax({
-                                    type : "POST",
-                                    url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
-                                    async : false,
-                                    timeout : 510,
-                                    data : {
-                                        "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
-                                        //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
-                                        "startX" : my.lon,
-                                        "startY" : my.lat,
-                                        //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
-                                        "endX" : hospital[selectHospital].lon,
-                                        "endY" : hospital[selectHospital].lat,
-                                        "reqCoordType" : "WGS84GEO", //좌표요청타입
-                                        "resCoordType" : "EPSG3857", //좌표반환타입
-                                        "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
-                                    },
-                                    success : function(response) {
+                                // $ .ajax({
+                                //     type : "POST",
+                                //     url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
+                                //     async : false,
+                                //     timeout : 510,
+                                //     data : {
+                                //         "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
+                                //         //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
+                                //         "startX" : my.lon,
+                                //         "startY" : my.lat,
+                                //         //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
+                                //         "endX" : hospital[selectHospital].lon,
+                                //         "endY" : hospital[selectHospital].lat,
+                                //         "reqCoordType" : "WGS84GEO", //좌표요청타입
+                                //         "resCoordType" : "EPSG3857", //좌표반환타입
+                                //         "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
+                                //     },
+                                //     success : function(response) {
                                         
-                                        var resultData = response.features; // 경로요청 결과로딩
-                                        var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
+                                //         var resultData = response.features; // 경로요청 결과로딩
+                                //         var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
 
-                                        var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
-                                        var finalMinute = (nowMinute+totalTime)%60; //도착분
+                                //         var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
+                                //         var finalMinute = (nowMinute+totalTime)%60; //도착분
 
-                                        ETE[selectHospital] = totalTime;
-                                        ETA[selectHospital] = finalHour + ":" + finalMinute;
-                                    },
-                                    error : function(request, status, error) {
-                                        console.log("code:"
-                                                + request.status + "\n"
-                                                + "message:"
-                                                + request.responseText
-                                                + "\n" + "error:" + error);
-                                    }
-                                });  //JSON TYPE EDIT [E]
+                                //         ETE[selectHospital] = totalTime;
+                                //         ETA[selectHospital] = finalHour + ":" + finalMinute;
+                                //     },
+                                //     error : function(request, status, error) {
+                                //         console.log("code:"
+                                //                 + request.status + "\n"
+                                //                 + "message:"
+                                //                 + request.responseText
+                                //                 + "\n" + "error:" + error);
+                                //     }
+                                // });  //JSON TYPE EDIT [E]
                                 } //for (병원 4개 반복문) [E]
 
                                 $("#TIME").text(TIME)
