@@ -2,7 +2,18 @@
 <html>
     <head>
         <title>EMERSERVICE input</title>
-        <title>t0 + mapservice</title>
+        
+        <style>
+            html { font-size: 10px; }
+            h1 { font-size: 4rem; }
+            h2 { font-size: 3rem; }
+            .tableboxTitle { margin-left: 0.5%; margin-top: 0%; margin-bottom: 0%; padding: 1rem; font-size: 1.5rem;}
+            .diffColor1 { background-color: rgb(144, 211, 255);}
+            .diffColor2 { background-color: rgb(215, 228, 255);}
+
+            .tablebox { margin-left: 0.5%; font-size: 1.3rem;}
+            .button { margin-left: 1%; margin-top: 2%; outline: hidden; background-color: grey; color: white;  }
+        </style>
         <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script>
         <script type="text/javascript">
@@ -11,17 +22,19 @@
             var marker_s;
             var marker_e = [];
             var my = {lat: 37.9504963, lon: 127.02928809999999}; //내좌표
-            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705, ETE: "", ETA: ""};
-            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525, ETE: "", ETA: ""};
-            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916, ETE: "", ETA: ""};
-            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260, ETE: "", ETA: ""};
+            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
+            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
+            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916};
+            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
             const hospital = [s, u, b, c];
+            var ETE = ["","","",""];
+            var ETA = ["","","",""];
 
             function setMap()   // 지도 생성
             {
                 map = new Tmapv2.Map("map_div", {
                     center : new Tmapv2.LatLng(my.lat, my.lon),
-                    width : "50%",
+                    width : "100%",
                     height : "400px",
                     zoom : 15,
                     zoomControl : true,
@@ -82,6 +95,7 @@
 
             }   // getLocation [E]
 
+
             function Main() {   // 메인함수
 
                 setMap();       // 1. 지도 띄우기
@@ -93,63 +107,83 @@
                         .click(
                             function() {
 
-                                getLocation();  // 좌표 업데이트
+                                getLocation(); // 현위치로딩
                                 var now = new Date(); // 현재시간 정보로딩              
                                 var nowHour = now.getHours(); //현재시
                                 var nowMinute = now.getMinutes(); //현재분
                                 var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
 
+
+                                // 1) 병원별 ETE ETA 계산 및 저장
                                 for(var selectHospital=0; selectHospital<4; selectHospital++)
                                 {
-                                
                                 //JSON TYPE EDIT [S]
-                                $
-                                    .ajax({
-                                        type : "POST",
-                                        url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result",
-                                        async : false,
-                                        data : {
-                                            "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
-                                            //경로요청 시작점좌표
-                                            "startX" : my.lon,
-                                            "startY" : my.lat,
-                                            //경로요청 끝점좌표
-                                            "endX" : hospital[selectHospital].lon,
-                                            "endY" : hospital[selectHospital].lat,
-                                            "reqCoordType" : "WGS84GEO", //좌표요청타입
-                                            "resCoordType" : "EPSG3857", //좌표반환타입
-                                            "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
-                                        },
-                                        success : function(response) {
-                                            
-                                            var resultData = response.features; // 경로요청 결과로딩
-                                            var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
+                                $ .ajax({
+                                    type : "POST",
+                                    url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
+                                    async : false,
+                                    timeout : 510,
+                                    data : {
+                                        "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
+                                        //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
+                                        "startX" : my.lon,
+                                        "startY" : my.lat,
+                                        //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
+                                        "endX" : hospital[selectHospital].lon,
+                                        "endY" : hospital[selectHospital].lat,
+                                        "reqCoordType" : "WGS84GEO", //좌표요청타입
+                                        "resCoordType" : "EPSG3857", //좌표반환타입
+                                        "searchOption" : 2, // (교통최적+최단시간)옵션으로 경로요청 선택
+                                    },
+                                    success : function(response) {
+                                        
+                                        var resultData = response.features; // 경로요청 결과로딩
+                                        var totalTime = Number((resultData[0].properties.totalTime / 60).toFixed(0)); // 소요시간(분)
 
-                                            var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
-                                            var finalMinute = (nowMinute+totalTime)%60; //도착분
+                                        var finalHour = Math.floor(((nowHour + (nowMinute + totalTime)/60)%24)); //도착시
+                                        var finalMinute = (nowMinute+totalTime)%60; //도착분
 
-                                            hospital[selectHospital].ETE = totalTime;
-                                            hospital[selectHospital].ETA = finalHour + ":" + finalMinute;
-                                            
-                                        },
-                                        error : function(request, status, error) {
-                                            console.log("code:"
-                                                    + request.status + "\n"
-                                                    + "message:"
-                                                    + request.responseText
-                                                    + "\n" + "error:" + error);
-                                        }
-                                    }); // .ajax [E]  JSON TYPE EDIT [E]   
-                                    
-                                }   // for [E]
+                                        ETE[selectHospital] = totalTime;
+                                        ETA[selectHospital] = finalHour + ":" + finalMinute;
+                                    },
+                                    error : function(request, status, error) {
+                                        console.log("code:"
+                                                + request.status + "\n"
+                                                + "message:"
+                                                + request.responseText
+                                                + "\n" + "error:" + error);
+                                    }
+                                });  //JSON TYPE EDIT [E]
+                                } //for (병원 4개 반복문) [E]
 
-                            $("#TIME").text(TIME)
-                            $("#result0").text(hospital[0].ETE + "//" + hospital[0].ETA)
-                            $("#result1").text(hospital[1].ETE + "//" + hospital[1].ETA)               
-                            $("#result2").text(hospital[2].ETE + "//" + hospital[2].ETA)
-                            $("#result3").text(hospital[3].ETE + "//" + hospital[3].ETA)                
-                            // 결과출력
+                                $("#TIME").text(TIME)
+                                $("#result0").text(ETE[0] + "//" + ETA[0])
+                                $("#result1").text(ETE[1] + "//" + ETA[1])               
+                                $("#result2").text(ETE[2] + "//" + ETA[2])
+                                $("#result3").text(ETE[3] + "//" + ETA[3])                
+                                // 결과출력
 
+                                // 2) 계산결과 전송
+                                //JSON TYPE EDIT [S]
+                                $ .ajax({
+                                    type : "POST",
+                                    url : "/api",
+                                    async : false,
+                                    data : {
+                                        "hospital" : hospital
+                                    },
+                                    success : function(response) {                                            
+                                        console.log("DATA SENDING SUCCESS")                                 
+                                    },
+                                    error : function(request, status, error) {
+                                        console.log("code:"
+                                                + request.status + "\n"
+                                                + "message:"
+                                                + request.responseText
+                                                + "\n" + "error:" + error);
+                                    }
+                                });  //JSON TYPE EDIT [E]
+                                
                             }); // .click [E]
 
             }   // Main [E]
@@ -159,24 +193,21 @@
 
     <body onload="Main()">
 
-        <h1>EMERSERVICE</h1>
-        <h2>응급환자정보입력</h2>
+        <header>
+            <h1 style="text-align: center; color: #9494ff; margin-bottom: 0%;">EMERSERVICE</h1>
+            <h2 style="text-align: center; color: #6e7380; margin-top: 0%;">응급환자정보입력</h2>
+            <form action = "/{{patient.id}}/user_ouput" method="POST"></form>
+        </header>
 
-        <form action = "/{{patient.id}}/user_ouput" method="POST"></form>
-
-            <div> <!--전체 체크리스트 [S]-->
+        <section style="background-color: darkseagreen; padding: 1rem; font-weight: bold;">
+            <!--전체 체크리스트 [S]-->    
                 <!-- 응급도정보 [S]-->																		
                 <div class="emer-table">
-                    <h2 style="padding: 7px; font-size: 15px;">
-                        <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;응급도
-                            
-                            
-                        
+                    <h2 class="tableboxTitle">
+                        <span style="font-size: 1.5rem; font-weight: 500" class="bull">●</span>&nbsp;응급도
                         &nbsp;&nbsp;
-                        <input type="checkbox" class="allchk_emer" id="emer_all">
-                        <label for="emer_all" style="font-size: 13px">전체선택</label>
                     </h2>
-                    <table>
+                    <table class="tablebox" id="emer-tablebox">
                         <colgroup>
                             
                                 <col width="25.0%">
@@ -188,108 +219,85 @@
                                 <col width="25.0%">
                             
                         </colgroup>
-    
-                            <tbody>
-                                
-                                <tr>
-
-                                    <td>
-                                        <input type="checkbox" id="label_emer0" name="emer" class="width_90 svdss_cd" value="emer0"> <!--선택X-->
-                                        <label for="label_emer0">선택안함</label>
-                                    </td>
-
-
-                                    <td>
-                                        <input type="checkbox" id="label_emer1" name="emer" class="width_90 svdss_cd" value="emer1">
-                                        <label for="label_emer1">긴급</label>
-                                    </td>
-                                                                
-                                                                                                                    
-                                    <td>
-                                        <input type="checkbox" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
-                                        <label for="label_emer2">응급</label>
-                                    </td>
-                                    
-                                    
-                                    <td>
-                                        <input type="checkbox" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3">
-                                        <label for="label_emer3">비응급</label>
-                                    </td>
-                                
-                                                                            
-                                    <td>&nbsp;</td>
-                                                                                                                                    
+        
+                        <tbody>
                             
-                        
-                        
-                                </tr></tbody>
+                            <tr class="diffColor2">
+        
+                                <td style="background-color: crimson; color: white; padding: 0.5rem;">
+                                    <input type="radio" id="label_emer1" name="emer" class="width_90 svdss_cd" value="emer1"
+                                    style="margin-left: 1rem">
+                                    <label for="label_emer1">&nbsp;긴급</label>
+                                </td>                 
+                                                                                                                
+                                <td style="background-color: orange; color: white; padding: 0.5rem;">
+                                    <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
+                                    <label for="label_emer2">&nbsp;응급</label>
+                                </td>
+                                
+                                
+                                <td style="background-color: green; color: white; padding: 0.5rem;">
+                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3">
+                                    <label for="label_emer3">&nbsp;비응급</label>
+                                </td>
+                                                                                                                                                                                 
+                    
+                            </tr></tbody>
                     </table>
-                                    
-
                 </div>
                 <!--  응급도정보 [E]-->
                 
-
+        
                 <!-- 필요한병상정보 [S]-->																		
                 <div class="bed-table">
-                    <h2 style="padding: 7px; font-size: 15px;">
+                    <h2 class="tableboxTitle">
                         <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;실시간병상정보
-                            
-                            
+                                                 
                         
                         &nbsp;&nbsp;
                         <input type="checkbox" class="allchk_bed" id="bed_all">
-                        <label for="bed_all" style="font-size: 13px">전체선택</label>
+                        <label for="bed_all" style="font-size: 1.3rem">전체선택</label>
                     </h2>
-                    <table>
+                    <table class="tablebox" id="bed-tablebox">
                         <colgroup>
                             
-                                <col width="25.0%">
+                                <col width="30.0%">
                             
-                                <col width="25.0%">
-                            
-                                <col width="25.0%">
-                            
-                                <col width="25.0%">
+                                <col width="30.0%">
                             
                         </colgroup>
-    
+        
                         <tbody>
                             
-                            <tr class="diffColor">                                                                  
-                                <td>
-                                    <input type="checkbox" id="label_bed0" name="bed" class="width_90 svdss_cd" value="bed0">
-                                    <label for="label_bed0">선택안함</label>
+                            <tr class="diffColor2">                                                                  
+                                <td style="padding: 0.5rem;">
+                                    <input type="checkbox" id="label_bed0" name="bed" class="width_90 svdss_cd" value="bed1">
+                                    <label for="label_bed0">[응급실] 일반</label>
                                 </td>
                                                             
                                                                                                                 
                                 <td>
-                                    <input type="checkbox" id="label_bed1" name="bed" class="width_90 svdss_cd" value="bed1">
-                                    <label for="label_bed1">[응급실] 일반</label>
+                                    <input type="checkbox" id="label_bed1" name="bed" class="width_90 svdss_cd" value="bed2">
+                                    <label for="label_bed1">[응급실] 소아</label>
                                 </td>                                    
-                                                                                                       
-                                <td>&nbsp;</td>
                                                                                                                                                                 
                             </tr></tbody>
                     </table>
                                 
                 </div>
                 <!--  필요한병상정보 [E]-->
-
-
+        
+        
                 <!-- 중증응급질환정보 [S]-->
-                <div class="disease-table">
-                    <h2 style="padding: 7px; font-size: 15px;"> 
+                <div class="dis-table">
+                    <h2 class="tableboxTitle"> 
                         <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;중증응급질환정보
-                        <span style="font-size: 11px; font-weight: 500; margin:5px 0 0 0;">
-                            
-                            
-                        </span>
+                    
                         &nbsp;&nbsp;
                         <input type="checkbox" class="allchk_dis" id="dis_all">
-                        <label for="dis_all" style="font-size: 13px">전체선택</label>
+                        <label for="dis_all" style="font-size: 1.3rem">전체선택</label>
                     </h2>
-                    <table>
+                    <table class="tablebox" id="dis-tablebox">
                         <colgroup>
                             
                                 <col width="25.0%">
@@ -301,135 +309,131 @@
                                 <col width="25.0%">
                             
                         </colgroup>
-
+        
                         <tbody>
                             
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" id="label_dis1" name="disease" class="width_90 svdss_cd" value="dis1">
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis1" name="dis" class="width_90 svdss_cd" value="dis1">
                                         <label for="label_dis1">[재관류중재술] 심근경색</label>
                                     </td>
                                                                 
                                                                                                                     
                                     <td>
-                                        <input type="checkbox" id="label_dis2" name="disease" class="width_90 svdss_cd" value="dis2">
+                                        <input type="checkbox" id="label_dis2" name="dis" class="width_90 svdss_cd" value="dis2">
                                         <label for="label_dis2">[재관류중재술] 뇌경색</label>
                                     </td>
                                     
                                                                                                                     
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis3" name="disease" class="width_90 svdss_cd" value="dis3">
+                                        <input type="checkbox" id="label_dis3" name="dis" class="width_90 svdss_cd" value="dis3">
                                         <label for="label_dis3">[뇌출혈수술] 거미막하출혈</label>
                                     </td>
                                                                 
                                                             
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis4" name="disease" class="width_90 svdss_cd" value="dis4">
+                                        <input type="checkbox" id="label_dis4" name="dis" class="width_90 svdss_cd" value="dis4">
                                         <label for="label_dis4">[뇌출혈수술] 거미막하출혈외</label>
                                     </td>
                                     
                                 </tr>
+                                                          
                             
-                                
-                            
-                                <tr class="diffColor">
-                                    <td>
-                                        <input type="checkbox" id="label_dis5" name="disease" class="width_90 svdss_cd" value="dis5">
+                                <tr class="diffColor1">
+                                    <td  style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis5" name="dis" class="width_90 svdss_cd" value="dis5">
                                         <label for="label_dis5">[대동맥응급] 흉부</label>
                                     </td>
                                     
                                 
                                                                                                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis6" name="disease" class="width_90 svdss_cd" value="dis6">
+                                        <input type="checkbox" id="label_dis6" name="dis" class="width_90 svdss_cd" value="dis6">
                                         <label for="label_dis6">[대동맥응급] 복부</label>
                                     </td>
                                                                                                                                 
                             
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis7" name="disease" class="width_90 svdss_cd" value="dis7">
+                                        <input type="checkbox" id="label_dis7" name="dis" class="width_90 svdss_cd" value="dis7">
                                         <label for="label_dis7">[담낭담관질환] 담낭질환</label>
                                     </td>
                                     
                                 
                                                                                                                     
                                     <td>
-                                        <input type="checkbox" id="label_dis8" name="disease" class="width_90 svdss_cd" value="dis8">
+                                        <input type="checkbox" id="label_dis8" name="dis" class="width_90 svdss_cd" value="dis8">
                                         <label for="label_dis8">[담낭담관질환] 담도포함질환</label>
                                     </td>
                                     
                                 </tr>
+                                                            
                             
-                                
-                            
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" id="label_dis9" name="disease" class="width_90 svdss_cd" value="dis9">
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis9" name="dis" class="width_90 svdss_cd" value="dis9">
                                         <label for="label_dis9">[복부응급수술] 비외상</label>
                                     </td>
                                     
                                 
                                                                                                                         
                                     <td>
-                                        <input type="checkbox" id="label_dis10" name="disease" class="width_90 svdss_cd" value="dis10">
+                                        <input type="checkbox" id="label_dis10" name="dis" class="width_90 svdss_cd" value="dis10">
                                         <label for="label_dis10">[장중첩/폐색] 영유아</label>
                                     </td>
                                                                                                                                 
                             
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis11" name="disease" class="width_90 svdss_cd" value="dis11">
+                                        <input type="checkbox" id="label_dis11" name="dis" class="width_90 svdss_cd" value="dis11">
                                         <label for="label_dis11">[사지접합의수술] 수족지접합</label>
                                     </td>
                                     
                                 
                                                                                                                         
                                     <td>
-                                        <input type="checkbox" id="label_dis12" name="disease" class="width_90 svdss_cd" value="dis12">
+                                        <input type="checkbox" id="label_dis12" name="dis" class="width_90 svdss_cd" value="dis12">
                                         <label for="label_dis12">[사지접합의수술] 수족지접합외</label>
                                     </td>
                                     
                                 </tr>
                             
-                                
-                            
-                                <tr class="diffColor">
-                                    <td>
-                                        <input type="checkbox" id="label_dis13" name="disease" class="width_90 svdss_cd" value="dis13">
+                                                            
+                                <tr class="diffColor1">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis13" name="dis" class="width_90 svdss_cd" value="dis13">
                                         <label for="label_dis13">[위장관응급내시경] 성인</label>
                                     </td>
                                     
                                 
                                                                                                                         
                                     <td>
-                                        <input type="checkbox" id="label_dis14" name="disease" class="width_90 svdss_cd" value="dis14">
+                                        <input type="checkbox" id="label_dis14" name="dis" class="width_90 svdss_cd" value="dis14">
                                         <label for="label_dis14">[위장관응급내시경] 영유아</label>
                                     </td>
                                     
                                 
                                                                                                                         
                                     <td>
-                                        <input type="checkbox" id="label_dis15" name="disease" class="width_90 svdss_cd" value="dis15">
+                                        <input type="checkbox" id="label_dis15" name="dis" class="width_90 svdss_cd" value="dis15">
                                         <label for="label_dis15">[기관지응급내시경] 성인</label>
                                     </td>
                                     
                                 
                                                                                                                     
                                     <td>
-                                        <input type="checkbox" id="label_dis16" name="disease" class="width_90 svdss_cd" value="dis16">
+                                        <input type="checkbox" id="label_dis16" name="dis" class="width_90 svdss_cd" value="dis16">
                                         <label for="label_dis16">[기관지응급내시경] 영유아</label>
                                     </td>
                                     
                                 </tr>
+                                                            
                             
-                                
-                            
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" id="label_dis17" name="disease" class="width_90 svdss_cd" value="dis17">
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis17" name="dis" class="width_90 svdss_cd" value="dis17">
                                         <label for="label_dis17">[산부인과응급] 분만</label>
                                     </td>
                                     
@@ -437,14 +441,14 @@
                                                                                         
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis18" name="disease" class="width_90 svdss_cd" value="dis18">
+                                        <input type="checkbox" id="label_dis18" name="dis" class="width_90 svdss_cd" value="dis18">
                                         <label for="label_dis18">[산부인과응급] 산과수술</label>
                                     </td>
                                                                                                                                 
                             
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis19" name="disease" class="width_90 svdss_cd" value="dis19">
+                                        <input type="checkbox" id="label_dis19" name="dis" class="width_90 svdss_cd" value="dis19">
                                         <label for="label_dis19">[산부인과응급] 부인과수술</label>
                                     </td>
                                     
@@ -452,17 +456,16 @@
                                                                                         
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis20" name="disease" class="width_90 svdss_cd" value="dis20">
+                                        <input type="checkbox" id="label_dis20" name="dis" class="width_90 svdss_cd" value="dis20">
                                         <label for="label_dis20">[안과적응급수술]</label>
                                     </td>
                                     
                                 </tr>
                             
-                                
-                            
-                                <tr class="diffColor">
-                                    <td>
-                                        <input type="checkbox" id="label_dis21" name="disease" class="width_90 svdss_cd" value="dis21">
+                                                           
+                                <tr class="diffColor1">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis21" name="dis" class="width_90 svdss_cd" value="dis21">
                                         <label for="label_dis21">[응급투석] HD</label>
                                     </td>
                                     
@@ -470,7 +473,7 @@
                             
                                                                                             
                                     <td>
-                                        <input type="checkbox" id="label_dis22" name="disease" class="width_90 svdss_cd" value="dis22">
+                                        <input type="checkbox" id="label_dis22" name="dis" class="width_90 svdss_cd" value="dis22">
                                         <label for="label_dis22">[응급투석] CRRT</label>
                                     </td>
                                     
@@ -478,7 +481,7 @@
                             
                                                                                             
                                     <td>
-                                        <input type="checkbox" id="label_dis23" name="disease" class="width_90 svdss_cd" value="dis23">
+                                        <input type="checkbox" id="label_dis23" name="dis" class="width_90 svdss_cd" value="dis23">
                                         <label for="label_dis23">[영상의학혈관중재] 성인</label>
                                     </td>
                                     
@@ -486,17 +489,16 @@
                             
                                                                                             
                                     <td>
-                                        <input type="checkbox" id="label_dis24" name="disease" class="width_90 svdss_cd" value="dis24">
+                                        <input type="checkbox" id="label_dis24" name="dis" class="width_90 svdss_cd" value="dis24">
                                         <label for="label_dis24">[영상의학혈관중재] 영유아</label>
                                     </td>
                                     
                                 </tr>
                             
-                                
-                            
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" id="label_dis25" name="disease" class="width_90 svdss_cd" value="dis25">
+                                                            
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="checkbox" id="label_dis25" name="dis" class="width_90 svdss_cd" value="dis25">
                                         <label for="label_dis25">[정신과적 응급] 폐쇄병동입원</label>
                                     </td>
                                     
@@ -504,7 +506,7 @@
                                                                                         
                                 
                                     <td>
-                                        <input type="checkbox" id="label_dis26" name="disease" class="width_90 svdss_cd" value="dis26">
+                                        <input type="checkbox" id="label_dis26" name="dis" class="width_90 svdss_cd" value="dis26">
                                         <label for="label_dis26">[중증화상]</label>
                                     </td>
                                     
@@ -512,7 +514,7 @@
                             
                                                                                             
                                     <td>
-                                        <input type="checkbox" id="label_dis27" name="disease" class="width_90 svdss_cd" value="dis27">
+                                        <input type="checkbox" id="label_dis27" name="dis" class="width_90 svdss_cd" value="dis27">
                                         <label for="label_dis27">[저출생체중아]</label>
                                     </td>
                                     
@@ -524,26 +526,29 @@
                     </table>
                 </div>
                 <!-- 중증응급질환정보 [E]-->
-            </div> <!--전체 체크리스트 [E]-->
-
-            <p><input type="submit" value="Submit"> <input type="reset" value="Reset"></p>
-
-        </form>
-
-
-        <div class="ft_area">            
-            <button id="btn_select">결과출력</button>
-                <p id="TIME"></p>
-                <p id="result0"></p>
-                <p id="result1"></p>
-                <p id="result2"></p>
-                <p id="result3"></p>
-        </div>    
-
-        <div id="map_div"></div>
-
-        <p>현위치</p>
-        <p id="location"></p>
+        
+                <p><input type="reset" class="button" value="Reset">
+                    <input type="submit" class="button" id="btn_select" value="Submit"></p>
+        
+            <!--전체 체크리스트 [E]-->
+            </form>
+        </section>
+        
+            
+        <div class="result_area">            
+            <p id="TIME"></p>
+            <p id="result0"></p>
+            <p id="result1"></p>
+            <p id="result2"></p>
+            <p id="result3"></p>
+        </div>
+        
+        <div class="mapdata_area">
+            <div id="map_div"></div>
+        
+            <p>현위치</p>
+            <p id="location"></p>
+        </div>
 
     </body>
 
