@@ -4,15 +4,15 @@
         <title>EMERSERVICE input</title>
         <meta charset="utf-8"/>
         <style>
-            html { font-size: 10px; }
+            html { font-size: 10px; margin: 0;}
             h1 { font-size: 4rem; }
             h2 { font-size: 3rem; }
             .tableboxTitle { margin-left: 0.5%; margin-top: 0%; margin-bottom: 0%; padding: 1rem; font-size: 1.5rem;}
-            .diffColor1 { background-color: rgb(144, 211, 255);}
-            .diffColor2 { background-color: rgb(215, 228, 255);}
+            .diffColor1 { background-color: rgb(168, 192, 236);}
+            .diffColor2 { background-color: rgb(194, 206, 228);}
 
             .tablebox { margin-left: 0.5%; font-size: 1.3rem;}
-            .button { margin-left: 1%; margin-top: 2%; outline: hidden; background-color: grey; color: white;  }
+            .button { margin-left: 1%; margin-top: 2%; background-color: grey; color: white; }
         </style>
         <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script>
@@ -99,14 +99,14 @@
             function sleep(selectHospital, thisDelay, end)  // API로딩
             {
                 if (selectHospital == end) {
-                    $("#TIME").text(TIME)
+                    $("#TIME").val(TIME)
                     return true;
                 }
 
                 var now = new Date(); // 현재시간 정보로딩              
                 var nowHour = now.getHours(); //현재시
                 var nowMinute = now.getMinutes(); //현재분
-                var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
+                var TIME = nowHour + ":" + nowMinute;
 
                 setTimeout(function()   // 시간지연
                 {
@@ -163,12 +163,12 @@
 
                 // 4. Tmap api 경로계산, 결과출력
                     $("#btn_select")
+
                         .click(
                             function() {
-
                                 getLocation(); // 현위치 로딩
-                                sleep(0, 600, 4);   // API 계산 및 결과 전송
-                                
+                                sleep(0, 600, 4);   // API 계산 및 결과 전송  
+
                             }); // .click [E]
 
             }   // Main [E]
@@ -179,19 +179,19 @@
     <body onload="Main()">
 
         <header>
-            <h1 style="text-align: center; color: #9494ff; margin-bottom: 0%;">EMERSERVICE</h1>
+            <h1 style="text-align: center; color: #9494ff; margin-bottom: 0%;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">AMBULANCE</span></h1>
             <h2 style="text-align: center; color: #6e7380; margin-top: 0%;">응급환자정보입력</h2>
             <form action = "/{{patient.id}}/user_ouput" method="POST"></form>
         </header>
 
-        <section style="background-color: darkseagreen; padding: 1rem; font-weight: bold;">
-            <form action = "/{{patient.id}}/user_ouput" method="POST">
-                
+        <section style="background-color:rgb(163, 202, 163); padding: 1rem; font-weight: bold;">
+            <form action = "/{{patient.id}}/user_output" method="POST" target="_self">
+
             <!--전체 체크리스트 [S]-->    
                 <!-- 응급도정보 [S]-->																		
                 <div class="emer-table">
                     <h2 class="tableboxTitle">
-                        <span style="font-size: 1.5rem; font-weight: 500" class="bull">●</span>&nbsp;응급도
+                        <span style="font-size: 1.5rem;" class="bull">●</span>&nbsp;응급도
                         &nbsp;&nbsp;
                     </h2>
                     <table class="tablebox" id="emer-tablebox">
@@ -211,19 +211,19 @@
                             
                             <tr class="diffColor2">
         
-                                <td style="background-color: crimson; color: white; padding: 0.5rem;">
+                                <td style="background-color: rgb(175, 53, 63); color: white; padding: 0.5rem;">
                                     <input type="radio" id="label_emer1" name="emer" class="width_90 svdss_cd" value="emer1"
                                     style="margin-left: 1rem">
                                     <label for="label_emer1">&nbsp;긴급</label>
                                 </td>                 
                                                                                                                 
-                                <td style="background-color: orange; color: white; padding: 0.5rem;">
+                                <td style="background-color: rgb(201, 131, 27); color: white; padding: 0.5rem;">
                                     <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
                                     <label for="label_emer2">&nbsp;응급</label>
                                 </td>
                                 
                                 
-                                <td style="background-color: green; color: white; padding: 0.5rem;">
+                                <td style="background-color: rgb(78, 116, 47); color: white; padding: 0.5rem;">
                                     <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3">
                                     <label for="label_emer3">&nbsp;비응급</label>
                                 </td>
@@ -237,7 +237,7 @@
                 <!-- 중증응급질환정보 [S]-->
                 <div class="dis-table">
                     <h2 class="tableboxTitle"> 
-                        <span style="font-size: 11px;font-weight: 500" class="bull">●</span>&nbsp;중증응급질환정보
+                        <span style="font-size: 1.5rem;" class="bull">●</span>&nbsp;중증응급질환정보
                         &nbsp;&nbsp;
                     </h2>
                     <table class="tablebox" id="dis-tablebox">
@@ -462,7 +462,7 @@
                                     </td>
                                     
                                         
-                                    <td style="background-color: darkcyan;">
+                                    <td style="background-color: rgb(110, 115, 124);">
                                         <input type="radio" id="label_dis0" name="dis" value="0" checked>
                                         <label for="label_dis0" style="font-weight: bolder; color: white;">수술 안함</label>
                                     </td>                                                                                                                                        
@@ -474,15 +474,16 @@
             <!--전체 체크리스트 [E]-->
 
             <!--ETE ETA 데이터 전송 [S]-->
-            <input type="hidden" id="ETE0" name="ETE_S">
-            <input type="hidden" id="ETE1" name="ETE_U">
-            <input type="hidden" id="ETE2" name="ETE_B">
-            <input type="hidden" id="ETE3" name="ETE_C">
+                <input type="hidden" id="ETE0" name="ETE_S">
+                <input type="hidden" id="ETE1" name="ETE_U">
+                <input type="hidden" id="ETE2" name="ETE_B">
+                <input type="hidden" id="ETE3" name="ETE_C">
 
-            <input type="hidden" id="ETA0" name="ETA_S">
-            <input type="hidden" id="ETA1" name="ETA_U">
-            <input type="hidden" id="ETA2" name="ETA_B">
-            <input type="hidden" id="ETA3" name="ETA_C">
+                <input type="hidden" id="ETA0" name="ETA_S">
+                <input type="hidden" id="ETA1" name="ETA_U">
+                <input type="hidden" id="ETA2" name="ETA_B">
+                <input type="hidden" id="ETA3" name="ETA_C">
+                <input type="hidden" id="TIME" name="TIME">
             <!--ETE ETA 데이터 전송 [E]-->    
 
                 <p><input type="reset" class="button" value="Reset">
@@ -491,9 +492,8 @@
             </form>
         </section>
         
-            
+
         <div class="result_area">            
-            <p id="TIME"></p>
             <p id="result0"></p>
             <p id="result1"></p>
             <p id="result2"></p>

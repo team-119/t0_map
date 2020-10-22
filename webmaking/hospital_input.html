@@ -2,16 +2,333 @@
 <html>
     <head>
         <title>HOSPITAL input</title>
+        <style>
+            html { font-size: 10px; margin: 0;}
+            h1 { font-size: 4rem; }
+            h2 { font-size: 3rem; }
+            .tableboxTitle { margin-left: 0.5%; margin-top: 0%; margin-bottom: 0%; padding: 1rem; font-size: 1.5rem;}
+            .diffColor1 { background-color: rgb(168, 192, 236);}
+            .diffColor2 { background-color: rgb(194, 206, 228);}
+
+            .tablebox { margin-left: 0.5%; font-size: 1.3rem;}
+            .button { margin-left: 1%; margin-top: 2%; background-color: grey; color: white; }
+        </style>
     </head>
     <body>
-        <h1>EMERSERVICE</h1>
-        <h2>수술실현황입력</h2>
 
-        <form class="contents" id="search_form" action="form-action.html" method="post">
-            <p>Room</p>
-            <label><input type="checkbox" name="room" value="환자정보"> Blue</label>
-            <label><input type="checkbox" name="room" value="red"> Red</label>
-            <p><input type="submit" value="Submit"> <input type="reset" value="Reset"></p>
-          </form>
+        <header>
+            <h1 style="text-align: center; color: #9494ff; margin-bottom: 0%;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">HOSPITAL</span></h1>
+            <h2 style="text-align: center; color: #6e7380; margin-top: 0%;">응급환자정보입력</h2>
+            <form action = "/{{patient.id}}/user_ouput" method="POST"></form>
+        </header>
+
+        <section style="background-color: rgb(163, 202, 163); padding: 1rem; font-weight: bold;">
+            <form action = "/{{patient.id}}/user_ouput" method="POST">
+
+            <!--전체 체크리스트 [S]-->    
+                <!-- 응급도정보 [S]-->																		
+                <div class="emer-table">
+                    <h2 class="tableboxTitle">
+                        <span style="font-size: 1.5rem;" class="bull">●</span>&nbsp;응급도
+                        &nbsp;&nbsp;
+                    </h2>
+                    <table class="tablebox" id="emer-tablebox">
+                        <colgroup>
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                        </colgroup>
+        
+                        <tbody>
+                            
+                            <tr class="diffColor2">
+        
+                                <td style="background-color: rgb(175, 53, 63); color: white; padding: 0.5rem;">
+                                    <input type="radio" id="label_emer1" name="emer" class="width_90 svdss_cd" value="emer1"
+                                    style="margin-left: 1rem">
+                                    <label for="label_emer1">&nbsp;긴급</label>
+                                </td>                 
+                                                                                                                
+                                <td style="background-color: rgb(201, 131, 27); color: white; padding: 0.5rem;">
+                                    <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
+                                    <label for="label_emer2">&nbsp;응급</label>
+                                </td>
+                                
+                                
+                                <td style="background-color: rgb(78, 116, 47); color: white; padding: 0.5rem;">
+                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3">
+                                    <label for="label_emer3">&nbsp;비응급</label>
+                                </td>
+                                                                                                                                                                                 
+                    
+                            </tr></tbody>
+                    </table>
+                </div>
+                <!--  응급도정보 [E]-->                
+                
+                <!-- 중증응급질환정보 [S]-->
+                <div class="dis-table">
+                    <h2 class="tableboxTitle"> 
+                        <span style="font-size: 1.5rem;" class="bull">●</span>&nbsp;중증응급질환정보
+                        &nbsp;&nbsp;
+                    </h2>
+                    <table class="tablebox" id="dis-tablebox">
+                        <colgroup>
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                                <col width="25.0%">
+                            
+                        </colgroup>
+        
+                        <tbody>
+                            
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis1" name="dis" value="1">
+                                        <label for="label_dis1">[재관류중재술] 심근경색</label>
+                                    </td>
+                                                                
+                                                                                                                    
+                                    <td>
+                                        <input type="radio" id="label_dis2" name="dis" value="2">
+                                        <label for="label_dis2">[재관류중재술] 뇌경색</label>
+                                    </td>
+                                    
+                                                                                                                    
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis3" name="dis" value="3">
+                                        <label for="label_dis3">[뇌출혈수술] 거미막하출혈</label>
+                                    </td>
+                                                                
+                                                            
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis4" name="dis" value="4">
+                                        <label for="label_dis4">[뇌출혈수술] 거미막하출혈외</label>
+                                    </td>
+                                    
+                                </tr>
+                                                          
+                            
+                                <tr class="diffColor1">
+                                    <td  style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis5" name="dis" value="5">
+                                        <label for="label_dis5">[대동맥응급] 흉부</label>
+                                    </td>
+                                    
+                                
+                                                                                                                
+                                    <td>
+                                        <input type="radio" id="label_dis6" name="dis" value="6">
+                                        <label for="label_dis6">[대동맥응급] 복부</label>
+                                    </td>
+                                                                                                                                
+                            
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis7" name="dis" value="7">
+                                        <label for="label_dis7">[담낭담관질환] 담낭질환</label>
+                                    </td>
+                                    
+                                
+                                                                                                                    
+                                    <td>
+                                        <input type="radio" id="label_dis8" name="dis" value="8">
+                                        <label for="label_dis8">[담낭담관질환] 담도포함질환</label>
+                                    </td>
+                                    
+                                </tr>
+                                                            
+                            
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis9" name="dis" value="9">
+                                        <label for="label_dis9">[복부응급수술] 비외상</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="radio" id="label_dis10" name="dis" value="10">
+                                        <label for="label_dis10">[장중첩/폐색] 영유아</label>
+                                    </td>
+                                                                                                                                
+                            
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis11" name="dis" value="11">
+                                        <label for="label_dis11">[사지접합의수술] 수족지접합</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="radio" id="label_dis12" name="dis" value="12">
+                                        <label for="label_dis12">[사지접합의수술] 수족지접합외</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                                            
+                                <tr class="diffColor1">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis13" name="dis" value="13">
+                                        <label for="label_dis13">[위장관응급내시경] 성인</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="radio" id="label_dis14" name="dis" value="14">
+                                        <label for="label_dis14">[위장관응급내시경] 영유아</label>
+                                    </td>
+                                    
+                                
+                                                                                                                        
+                                    <td>
+                                        <input type="radio" id="label_dis15" name="dis" value="15">
+                                        <label for="label_dis15">[기관지응급내시경] 성인</label>
+                                    </td>
+                                    
+                                
+                                                                                                                    
+                                    <td>
+                                        <input type="radio" id="label_dis16" name="dis" value="16">
+                                        <label for="label_dis16">[기관지응급내시경] 영유아</label>
+                                    </td>
+                                    
+                                </tr>
+                                                            
+                            
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis17" name="dis" value="17">
+                                        <label for="label_dis17">[산부인과응급] 분만</label>
+                                    </td>
+                                    
+                                
+                                                                                        
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis18" name="dis" value="18">
+                                        <label for="label_dis18">[산부인과응급] 산과수술</label>
+                                    </td>
+                                                                                                                                
+                            
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis19" name="dis" value="19">
+                                        <label for="label_dis19">[산부인과응급] 부인과수술</label>
+                                    </td>
+                                    
+                                
+                                                                                        
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis20" name="dis" value="20">
+                                        <label for="label_dis20">[안과적응급수술]</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                                           
+                                <tr class="diffColor1">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis21" name="dis" value="21">
+                                        <label for="label_dis21">[응급투석] HD</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="radio" id="label_dis22" name="dis" value="22">
+                                        <label for="label_dis22">[응급투석] CRRT</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="radio" id="label_dis23" name="dis" value="23">
+                                        <label for="label_dis23">[영상의학혈관중재] 성인</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="radio" id="label_dis24" name="dis" value="24">
+                                        <label for="label_dis24">[영상의학혈관중재] 영유아</label>
+                                    </td>
+                                    
+                                </tr>
+                            
+                                                            
+                                <tr class="diffColor2">
+                                    <td style="padding: 0.5rem;">
+                                        <input type="radio" id="label_dis25" name="dis" value="25">
+                                        <label for="label_dis25">[정신과적 응급] 폐쇄병동입원</label>
+                                    </td>
+                                    
+                                
+                                                                                        
+                                
+                                    <td>
+                                        <input type="radio" id="label_dis26" name="dis" value="26">
+                                        <label for="label_dis26">[중증화상]</label>
+                                    </td>
+                                    
+                                
+                            
+                                                                                            
+                                    <td>
+                                        <input type="radio" id="label_dis27" name="dis" value="27">
+                                        <label for="label_dis27">[저출생체중아]</label>
+                                    </td>
+                                    
+                                        
+                                    <td style="background-color:rgb(110, 115, 124);">
+                                        <input type="radio" id="label_dis0" name="dis" value="0" checked>
+                                        <label for="label_dis0" style="font-weight: bolder; color: white;">수술 안함</label>
+                                    </td>                                                                                                                                        
+                                               
+                        </tr></tbody>
+                    </table>
+                </div>
+                <!-- 중증응급질환정보 [E]-->
+            <!--전체 체크리스트 [E]-->
+
+            <!--ETE ETA 데이터 전송 [S]-->
+            <input type="hidden" id="ETE0" name="ETE_S">
+            <input type="hidden" id="ETE1" name="ETE_U">
+            <input type="hidden" id="ETE2" name="ETE_B">
+            <input type="hidden" id="ETE3" name="ETE_C">
+
+            <input type="hidden" id="ETA0" name="ETA_S">
+            <input type="hidden" id="ETA1" name="ETA_U">
+            <input type="hidden" id="ETA2" name="ETA_B">
+            <input type="hidden" id="ETA3" name="ETA_C">
+            <input type="hidden" id="TIME" name="TIME">
+            <!--ETE ETA 데이터 전송 [E]-->    
+
+                <p><input type="reset" class="button" value="Reset">
+                    <input type="submit" class="button" id="btn_select" value="Submit"></p>
+
+            </form>
+        </section>
+        
     </body>
 </html>
