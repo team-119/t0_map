@@ -5,6 +5,7 @@
         <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://apis.openapi.sk.com/tmap/jsv2?version=2&appKey=l7xxf6a3bebd3c3b4d69bdbd799bc288845d"></script> <!--version2로 슬쩍수정-->
         <script type="text/javascript">
+
     /* t0반환 코드작성
         환자-응급실별 t0 반환 (환자,응급실 순서대로 대응시키고 t0반환함수 호출하는 코드 작성할것)
         반환한 t0 데이터베이스에 연결해주는 방법? 또는 바로 타임라인알고리즘에 넘겨주는 방법
@@ -19,7 +20,6 @@
                 var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916, ETE: 0, ETA: 0};
                 var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260, ETE: 0, ETA: 0};
                 const hospital = [s, u, b, c];
-
 
                 function getLocation()  // 좌표 로딩, 지도중심변경, 현위치마커
             {  
@@ -40,7 +40,6 @@
 
             }   // getLocation [E]
 
-
                 function Main() // 메인함수
                 {
                     getLocation(); //현재 위도경도 로딩
@@ -55,7 +54,7 @@
                                     var TIME = " 현재시간 : " + nowHour + ":" + nowMinute;
                                     $("#TIME").text(TIME);
 
-                                // 1) 병원별 ETE ETA 계산 및 저장
+                                    // 1) 병원별 ETE ETA 계산 및 저장
                                     for(var selectHospital=0; selectHospital<4; selectHospital++)
                                     {
                                     //JSON TYPE EDIT [S]
@@ -85,9 +84,6 @@
 
                                             hospital[selectHospital].ETE = totalTime;
                                             hospital[selectHospital].ETA = finalHour + ":" + finalMinute;
-                                            
-                                            $("#result").text(hospital[selectHospital].ETE + "//" + hospital[selectHospital].ETA);
-                                            console.log()
                                         },
                                         error : function(request, status, error) {
                                             console.log("code:"
@@ -99,14 +95,15 @@
                                     });  //JSON TYPE EDIT [E]
                                     } //for (병원 4개 반복문) [E]
 
-                                // 2) 계산결과 전송
+                                    // 2) 계산결과 전송
                                     //JSON TYPE EDIT [S]
                                     $ .ajax({
                                         type : "POST",
-                                        url : "http://127.0.0.1:8000/user_input", //version2로 슬쩍수정봄
+                                        url : "민지화이팅",
                                         async : false,
                                         data : {
-                                            "hospital" : hospital
+                                            "ETE[]" : [hospital[0].ETE, hospital[1].ETE, hospital[2].ETE, hospital[3].ETE],
+                                            "ETA[]" : [hospital[0].ETA, hospital[1].ETA, hospital[2].ETA, hospital[3].ETA]
                                         },
                                         success : function(response) {                                            
                                             console.log("DATA SENDING SUCCESS")                                 
@@ -119,11 +116,11 @@
                                                     + "\n" + "error:" + error);
                                         }
                                     });  //JSON TYPE EDIT [E]
-
+                                
                                 }); //function [E]
                 } // Main [E]
 
-    </script>
+        </script>
     </head>
 
     <body onload="Main()">
