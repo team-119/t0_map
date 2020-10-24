@@ -3,7 +3,9 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMBULANCE input</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         html { font-size: 10px; margin: 0px;}
@@ -25,7 +27,7 @@
             position: relative;
         }
         section {
-            background-color: rgb(163, 202, 163);
+            background-color: rgb(192, 219, 192);
             width: 52%;
             height: 450px;
             position: relative;
@@ -42,7 +44,7 @@
             overflow-y: auto;
         }
         footer {
-            background-color: lightgrey;
+            background-color: rgb(218, 218, 218);
             width: 100%;
             height: 150px;
             line-height: 10px;
@@ -51,7 +53,7 @@
         }
         header,nav,footer{text-align: center;}
 
-        #clock { text-align: right; margin: 1%; font-weight: bold; font-size: 1.5rem; color:saddlebrown;}
+        #clock { text-align: right; margin: 1%; font-weight: bold; font-size: 1.5rem; color:rgb(90, 88, 86);}
         h1 { font-size: 4rem; }
         h2 { font-size: 3rem; }
         td { font-size: 1rem; }
@@ -60,7 +62,31 @@
         .diffColor2 { background-color: rgb(194, 206, 228); }
 
         .tablebox { margin-left: 3%; font-size: 1.3rem; width: 90%; }
-        .button { margin-left: 3%; margin-top: 1%; background-color: grey; color: white; }
+
+        .button{
+            margin-left: 3%;
+            margin-top: 1%;
+            padding: 10px 50px 8px 50px;
+            color: white;
+            font-family: arial;
+            font-size: 18px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-align: center;
+            background: rgb(148, 148, 148);
+            border-radius: 10px;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+
+        .button:hover{
+            background: #7c7c7c;
+        }
+
+        .button:active{
+            transform: scale(1.025);
+            }
+
     </style>
 
     <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -158,6 +184,7 @@
         {
             if (selectHospital == end) {
                 $("#TIME").val(TIME)
+                $('form').unbind('submit').submit()
                 return true;
             }
 
@@ -220,13 +247,11 @@
             getLocation();  // 3. 좌표 로딩, 지도중심변경, 현위치마커
 
             // 4. Tmap api 경로계산, 결과출력
-                $("#btn_select")
-
-                    .click(
-                        function() {
+                $('form').submit(
+                        function(event) {
+                            event.preventDefault(); // submit 방지
                             getLocation(); // 현위치 로딩
-                            sleep(0, 600, 4);   // API 계산 및 결과 전송  
-
+                            sleep(0, 600, 4);   // API 계산 및 결과 전송
                         }); // .click [E]
 
         }   // Main [E]
@@ -236,8 +261,7 @@
 <body onload="Main()">
     <header>
         <h1 style="text-align: center; color: #9494ff;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">AMBULANCE</span></h1>
-        <h2 style="text-align: center; color: #6e7380;">응급환자정보입력
-            <div id="clock"></div></h2>
+        <h2 style="text-align: center; color: #6e7380;">응급환자정보입력<div id="clock"></div></h2>
 
     </header>
 <!--
@@ -528,7 +552,7 @@
                                         
                                     <td style="background-color: rgb(119, 143, 156);">
                                         <input type="radio" id="label_oper0" name="oper" value="0" checked>
-                                        <label for="label_oper0" style="font-weight: bolder; color: white;">수술 안함</label>
+                                        <label for="label_oper0" style="color: white;">수술 안함</label>
                                     </td>                                                                                                                                        
                                                
                         </tr></tbody>
@@ -554,17 +578,14 @@
             <!--ETE ETA 데이터 전송 [E]-->    
 
                 <p><input type="reset" class="button" value="RESET">
-                    <input type="submit" class="button" id="btn_select" value="MATCH" preventDefault></p>
+                    <input type="submit" class="button" value="MATCH"></p>
 
             </form>
         </div>
     </section>
     <aside id="map_area">
-        <div id="map_div"></div>    <!--지도?????????-->
+        <div id="map_div"></div>
     </aside>
 
-    <footer>
-        이거는 푸터
-    </footer>
 </body>
 </html>
