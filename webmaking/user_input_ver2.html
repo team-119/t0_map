@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>EMERSERVICE input</title>
+        <title>input 원본</title>
         <meta charset="utf-8"/>
         <style>
             html { font-size: 10px; margin: 0;}
@@ -78,10 +78,6 @@
                     {
                         my.lat = position.coords.latitude;
                         my.lon = position.coords.longitude;
-
-                        document.getElementById("location").innerHTML = // 위도경도 출력
-                        "Latitude: " + my.lat + "<br>" +
-                        "Longitude: " + my.lon;
                         
                         // 지도중심 변경
                         map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
@@ -139,7 +135,6 @@
                             ETE[selectHospital] = totalTime;
                             ETA[selectHospital] = finalHour + ":" + finalMinute;
 
-                            $("#result"+selectHospital).text(ETE[selectHospital] + "//" + ETA[selectHospital])
                             $("#ETE"+selectHospital).val(ETE[selectHospital])
                             $("#ETA"+selectHospital).val(ETA[selectHospital])
                         },
@@ -185,7 +180,7 @@
             <h2 style="text-align: center; color: #6e7380; margin-top: 0%;">응급환자정보입력</h2>
         </header>
 
-        <div style="background-color:rgb(163, 202, 163); padding: 1rem; font-weight: bold;">
+        <div style="background-color:rgb(163, 202, 163); padding: 1rem; font-weight: bold; overflow-y: auto;">
             <form method="POST">
                 {% csrf_token %}
 
@@ -226,7 +221,7 @@
                                 
                                 
                                 <td style="background-color: rgb(78, 116, 47); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3">
+                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3" checked>
                                     <label for="label_emer3">&nbsp;비응급</label>
                                 </td>
                                                                                                                                                                                  
@@ -476,6 +471,8 @@
             <!--전체 체크리스트 [E]-->
 
             <!--ETE ETA 데이터 전송 [S]-->
+                <input type="hidden" id="by" name="by" value="0">
+
                 <input type="hidden" id="ETE0" name="ETE_S">
                 <input type="hidden" id="ETE1" name="ETE_U">
                 <input type="hidden" id="ETE2" name="ETE_B">
@@ -485,6 +482,7 @@
                 <input type="hidden" id="ETA1" name="ETA_U">
                 <input type="hidden" id="ETA2" name="ETA_B">
                 <input type="hidden" id="ETA3" name="ETA_C">
+
                 <input type="hidden" id="TIME" name="TIME">
             <!--ETE ETA 데이터 전송 [E]-->    
 
@@ -494,19 +492,10 @@
             </form>
         </div>
 
-        <div class="result_area">            
-            <p id="result0"></p>
-            <p id="result1"></p>
-            <p id="result2"></p>
-            <p id="result3"></p>
-        </div>
-
         <div class="mapdata_area">
             <div id="map_div"></div>
-        
-            <p>현위치</p>
-            <p id="location"></p>
         </div>
+
 
     </body>
 
