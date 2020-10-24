@@ -2,6 +2,7 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>HOSPITAL input</title>
         <style>
             html { font-size: 10px; margin: 0;
@@ -51,9 +52,9 @@
             header,nav,footer{text-align: center;}
 
             #clock { text-align: right; margin: 1%; font-weight: bold; font-size: 1.5rem; color:saddlebrown;}
-            h1 { font-size: 4rem; }
-            h2 { font-size: 3rem; }
-            td { font-size: 1.1rem;}
+            h1 { font-size: 40px; }
+            h2 { font-size: 30px; }
+            td { font-size: 1.1rem; font-weight: bolder;}
             .tableboxTitle { margin-top: 0%; margin-bottom: 0%; padding: 1rem; font-size: 1.3rem;}
             .diffColor1 { background-color: rgb(168, 192, 236); height: 35px;}
             .diffColor2 { background-color: rgb(194, 206, 228); height: 35px;}
@@ -73,36 +74,49 @@
         </style>
 
         <script>
-            function printTime() {
-            var clock = document.getElementById("clock");
-            var now = new Date(); 
-            clock.innerHTML = 
-            now.getFullYear() + "-" + 
-            (now.getMonth() + 1) + "-" +
-            now.getDate() + " " + 
-            now.getHours() + ":" + 
-            now.getMinutes() + ":" + 
-            now.getSeconds();
-            setTimeout("printTime()", 1000); 
+            function printTime() // 페이지에 시간 출력
+            {
+                var clock = document.getElementById("clock");
+                var now = new Date(); 
+                clock.innerHTML = 
+                now.getFullYear() + "-" + 
+                (now.getMonth() + 1) + "-" +
+                now.getDate() + " " + 
+                now.getHours() + ":" + 
+                now.getMinutes() + ":" + 
+                now.getSeconds();
+                setTimeout("printTime()", 1000); 
             }
 
-                /*
-                $( "#clk" ).click(function() {
-                    
-                    $( "<ul>" )
-                    .append( "asdfasdfasdf" 시간 + 추가한 환자정보 내용 ) //@ 환자정보 입력 로그 창 제작 / 선택정보 따라 로그 추가.
-                    .appendTo( "#log" );
-                }); */
+            function Main()
+            {
+                printTime();
+
+                $("#btn_select")
+                    .click(
+                        function() {
+
+                            /*
+                            
+                                $( "<ul>" )
+                                .append( "asdfasdfasdf" 시간 + 추가한 환자정보 내용 ) //@ 환자정보 입력 로그 창 제작 / 선택정보 따라 로그 추가.
+                                .appendTo( "#log" );
+
+                            */
+
+                        }); // .click [E]
+
+            }
+
         </script>
 
 
     </head>
-    <body onload="printTime()">
+    <body onload="Main()">
 
         <header>
             <h1 style="text-align: center; color: #9494ff;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">HOSPITAL</span></h1>
-            <h2 style="text-align: center; color: #6e7380;">응급환자정보입력</h2>
-            <div id="clock"></div>
+            <h2 style="text-align: center; color: #6e7380;">응급환자정보입력<div id="clock"></div></h2>
         </header>
 
         <section>
