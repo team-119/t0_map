@@ -123,7 +123,7 @@
             <div style="background-color: rgb(161 173 165)">
                 <p style="font-size: 1rem; font-weight: bold;">&nbsp;&nbsp;환자정보 작성</p>
             </div>
-            <form action = "/{{patient.id}}/user_ouput" method="POST" target="_self">
+            <form method="POST">
                 {% csrf_token %}
             <!--전체 체크리스트 [S]-->    
                 <!-- 응급도정보 [S]-->																		
