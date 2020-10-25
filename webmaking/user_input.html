@@ -184,7 +184,7 @@
         {
             if (selectHospital == end) {
                 $("#TIME").val(TIME)
-                $('form').unbind('submit').submit()
+                $('form').unbind('submit').submit() // submit 재실행
                 return true;
             }
 
@@ -198,15 +198,15 @@
                 console.log("Timeout : " + selectHospital);
                 $ .ajax({
                     type : "POST",
-                    url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result", //version2로 슬쩍수정봄
+                    url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result",
                     async : false,
                     timeout : 510,
                     data : {
                         "appKey" : "l7xxf6a3bebd3c3b4d69bdbd799bc288845d",
-                        //경로요청 시작점좌표 -> geolocation으로 수정필요, 일정초마다 반복 업데이트 어떻게??
+                        //경로요청 시작점좌표
                         "startX" : my.lon,
                         "startY" : my.lat,
-                        //경로요청 끝점좌표 -> 응급실좌표값으로 받아야함
+                        //경로요청 끝점좌표
                         "endX" : hospital[selectHospital].lon,
                         "endY" : hospital[selectHospital].lat,
                         "reqCoordType" : "WGS84GEO", //좌표요청타입
@@ -236,7 +236,7 @@
                     }
                 });
                 sleep(selectHospital+1, thisDelay, end);
-            }, thisDelay);
+            }, thisDelay);  // setTimeout [E]
         }   // sleep [E]
 
         function Main()   // 메인함수
@@ -262,18 +262,13 @@
     <header>
         <h1 style="text-align: center; color: #9494ff;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">AMBULANCE</span></h1>
         <h2 style="text-align: center; color: #6e7380;">응급환자정보입력<div id="clock"></div></h2>
-
     </header>
-<!--
-    <nav>
-        현재시간 / 메뉴 / 링크버튼 
-    </nav>
--->
-    
+
     <section id="check_area">
         <div style="padding: 1rem; font-weight: bold;">
             <form method="POST">
                 {% csrf_token %}
+                
 
             <!--전체 체크리스트 [S]-->    
                 <!-- 응급도정보 [S]-->																		
@@ -561,6 +556,7 @@
                 <!-- 중증응급질환정보 [E]-->
             <!--전체 체크리스트 [E]-->
 
+
             <!--ETE ETA 데이터 전송 [S]-->
                 <input type="hidden" id="by" name="by" value="0">
 
@@ -576,6 +572,7 @@
 
                 <input type="hidden" id="TIME" name="TIME">
             <!--ETE ETA 데이터 전송 [E]-->    
+
 
                 <p><input type="reset" class="button" value="RESET">
                     <input type="submit" class="button" value="MATCH"></p>
