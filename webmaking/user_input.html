@@ -3,7 +3,6 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMBULANCE input</title>
     <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -184,7 +183,7 @@
         {
             if (selectHospital == end) {
                 $("#TIME").val(TIME)
-                $('form').unbind('submit').submit() // submit 재실행
+                $("#emerForm").submit(); // submit 재실행
                 return true;
             }
 
@@ -247,12 +246,13 @@
             getLocation();  // 3. 좌표 로딩, 지도중심변경, 현위치마커
 
             // 4. Tmap api 경로계산, 결과출력
-                $('form').submit(
-                        function(event) {
-                            event.preventDefault(); // submit 방지
-                            getLocation(); // 현위치 로딩
-                            sleep(0, 600, 4);   // API 계산 및 결과 전송
-                        }); // .click [E]
+            $("#btn_select")
+                .click(
+                    function(e) {
+                        e.preventDefault();
+                        getLocation(); // 현위치 로딩
+                        sleep(0, 600, 4);   // API 계산 및 결과 전송  
+                }); // .click [E]
 
         }   // Main [E]
             
@@ -266,7 +266,7 @@
 
     <section id="check_area">
         <div style="padding: 1rem; font-weight: bold;">
-            <form method="POST">
+            <form method="POST" id="emerForm">
                 {% csrf_token %}
                 
 
@@ -295,19 +295,19 @@
                             <tr class="diffColor2">
         
                                 <td style="background-color: rgb(175, 53, 63); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer1" name="emer" class="width_90 svdss_cd" value="emer1"
+                                    <input type="radio" id="label_emer1" name="emer" class="width_90 svdss_cd" value="1"
                                     style="margin-left: 1rem">
                                     <label for="label_emer1">&nbsp;긴급</label>
                                 </td>                 
                                                                                                                 
                                 <td style="background-color: rgb(201, 131, 27); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
+                                    <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="2">
                                     <label for="label_emer2">&nbsp;응급</label>
                                 </td>
                                 
                                 
                                 <td style="background-color: rgb(78, 116, 47); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3" checked>
+                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="3" checked>
                                     <label for="label_emer3">&nbsp;비응급</label>
                                 </td>
                                                                                                                                                                                  
@@ -558,8 +558,6 @@
 
 
             <!--ETE ETA 데이터 전송 [S]-->
-                <input type="hidden" id="by" name="by" value="0">
-
                 <input type="hidden" id="ETE0" name="ETE_S">
                 <input type="hidden" id="ETE1" name="ETE_U">
                 <input type="hidden" id="ETE2" name="ETE_B">
@@ -575,7 +573,7 @@
 
 
                 <p><input type="reset" class="button" value="RESET">
-                    <input type="submit" class="button" value="MATCH"></p>
+                    <input type="submit" class="button" id="btn_select" value="MATCH"></p>
 
             </form>
         </div>
