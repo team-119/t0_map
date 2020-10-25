@@ -2,7 +2,6 @@
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>HOSPITAL input</title>
         <style>
             html { font-size: 10px; margin: 0;
@@ -73,7 +72,13 @@
             }
         </style>
 
+        <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script>
+            var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
+            var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
+            var b = {name: "[기관]의료법인영동의료재단의정부백병원", lat: 37.745791, lon: 127.061916};
+            var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
+            const hospital = [s, u, b, c];
             function printTime() // 페이지에 시간 출력
             {
                 var clock = document.getElementById("clock");
@@ -95,14 +100,18 @@
                 $("#btn_select")
                     .click(
                         function() {
+                            var selectHospital = $("#selectHospital").val();
 
-                            /*
+                            var now = new Date(); // 현재시간 정보로딩              
+                            var nowHour = now.getHours(); //현재시
+                            var nowMinute = now.getMinutes(); //현재분
+                            var TIME = nowHour + ":" + nowMinute;
+                            $("#TIME").val(TIME)
+                            $("#HOS").val(selectHospital)
+                            $("#ETE"+selectHospital).val("0")
+                            $("#ETA"+selectHospital).val(TIME)
                             
-                                $( "<ul>" )
-                                .append( "asdfasdfasdf" 시간 + 추가한 환자정보 내용 ) //@ 환자정보 입력 로그 창 제작 / 선택정보 따라 로그 추가.
-                                .appendTo( "#log" );
-
-                            */
+                            // db 데이터 가져오는 함수 추가
 
                         }); // .click [E]
 
@@ -116,7 +125,17 @@
 
         <header>
             <h1 style="text-align: center; color: #9494ff;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">HOSPITAL</span></h1>
-            <h2 style="text-align: center; color: #6e7380;">응급환자정보입력<div id="clock"></div></h2>
+            <h2 style="text-align: center; color: #6e7380;">
+            <span class="ft_area">
+                <select id="selectHospital">
+                    <option value="0">[권역][외상]가톨릭대학교의정부성모병원</option>
+                    <option value="1">[기관]경기도의료원의정부병원</option>
+                    <option value="2">[기관]의료법인영동의료재단의정부백병원</option>
+                    <option value="3">[기관]추병원</option>
+                </select>
+                <button id="btn_select">병원설정</button>
+            </span>
+            <span id="clock"></span></h2>
         </header>
 
         <section>
@@ -150,18 +169,18 @@
                             <tr class="diffColor2">
         
                                 <td style="background-color: rgb(175, 53, 63); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer1" name="emer" value="emer1">
+                                    <input type="radio" id="label_emer1" name="emer" value="1">
                                     <label for="label_emer1">&nbsp;긴급</label>
                                 </td>                 
                                                                                                                 
                                 <td style="background-color: rgb(201, 131, 27); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="emer2">
+                                    <input type="radio" id="label_emer2" name="emer" class="width_90 svdss_cd" value="2">
                                     <label for="label_emer2">&nbsp;응급</label>
                                 </td>
                                 
                                 
                                 <td style="background-color: rgb(78, 116, 47); color: white; padding: 0.5rem;">
-                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="emer3" checked>
+                                    <input type="radio" id="label_emer3" name="emer" class="width_90 svdss_cd" value="3" checked>
                                     <label for="label_emer3">&nbsp;비응급</label>
                                 </td>
                                                                                                                                                                                  
@@ -411,7 +430,7 @@
             <!--전체 체크리스트 [E]-->
 
             <!--ETE ETA 데이터 전송 [S]-->
-            <input type="hidden" id="by" name="by" value="1">
+            <input type="hidden" id="HOS" name="hos">
 
             <input type="hidden" id="ETE0" name="ETE_S">
             <input type="hidden" id="ETE1" name="ETE_U">
@@ -434,7 +453,7 @@
         
         <aside style="font-size: 1.5rem;">
             <div style="background-color: rgb(187, 198, 212);">
-                <p style="font-size: 1rem; font-weight: bold;">&nbsp;&nbsp;응급환자 접수 목록</p>
+                <p style="font-size: 1rem; font-weight: bold;">&nbsp;&nbsp;응급환자 발생 현황</p>
             </div>
             <ul id="log">
                 <li>#2020_10_24 10:01 // 응급도: 응급 / 중증응급질환정보: 사지접합의수술</li>
@@ -467,9 +486,6 @@
                 <li>#2020_10_24 15:23 // 응급도: 응급 / 중증응급질환정보: 사지접합의수술</li>
                 <li>#2020_10_24 16:34 // 응급도: 응급 / 중증응급질환정보: 사지접합의수술</li>
                 <li>#2020_10_24 16:35 // 응급도: 응급 / 중증응급질환정보: 사지접합의수술</li>
-                
-
-
             </ul>
         </aside>
 
