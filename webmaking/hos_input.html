@@ -11,9 +11,10 @@
                 font-weight: 300;
                 font-size: 10px;
                 margin: 0;
+                padding: 0;
             }
             header {
-                background-color: white;
+                background: white;
                 width: 100%;
                 height: 130px;
                 line-height: 20px;
@@ -67,6 +68,20 @@
 
                 overflow: hidden;
             }
+            
+            .show_area {
+                width: 93%;
+                height: 440px;
+                outline: invert;
+                background-color: white;
+                margin: auto;
+                padding: 0;
+                margin-top: 45px;
+                list-style-type: none;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto;
+            }
 
             #clock {
                 text-align: right;
@@ -75,14 +90,26 @@
                 font-weight: 300;
                 font-size: 1.5rem;
                 color:saddlebrown;
-                }
+            }
             h1 { font-size: 40px; font-family: 'Source Sans Pro'; font-weight: 300;}
             h2 { font-size: 30px; }
-            td { font-size: 1.1rem; font-weight: bolder;}
+            td { font-size: 1.1rem; font-weight: bolder; padding-left: 5px; vertical-align: middle;}
             .tableboxTitle { margin-top: 0%; margin-bottom: 0%; padding: 1rem; font-size: 1.3rem;}
-            .diffColor1 { background-color: rgb(168, 192, 236); height: 35px;}
-            .diffColor2 { background-color: rgb(194, 206, 228); height: 35px;}
-            .tablebox { width: 95%; margin: auto}
+            .diffColor1 { background-color: rgb(168, 192, 236); height: 35px; }
+            .diffColor2 { background-color: rgb(194, 206, 228); height: 35px; }
+            .diffColor3 { background-color: rgb(190, 201, 221); height: 30px; }
+            .diffColor4 { background-color: rgb(244, 248, 255); height: 30px; }
+            .tablebox { width: 95%; margin: auto }
+            .fixed_top {
+                display:inline-table;
+                position: absolute;
+                top: 10%;
+                left: 5%;
+                right: 5%;
+                width: 90%;
+
+            }
+
             .button { margin-left: 1.5%; margin-top: 2%; background-color: grey; color: white; width: 67px; height: 32px;}
 
             #log { 
@@ -97,7 +124,7 @@
             }
         </style>
 
-        <script	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script>
             var s = {name: "[권역][외상]가톨릭대학교의정부성모병원", lat: 37.758568, lon: 127.077705};
             var u = {name: "[기관]경기도의료원의정부병원", lat: 37.741181, lon: 127.042525};
@@ -105,19 +132,32 @@
             var c = {name: "[기관]추병원", lat: 37.750760, lon: 127.046260};
             const hospital = [s, u, b, c];
 
-            function printTime() // 페이지에 시간 출력
+            function printTime() {
+                
+                var clock = document.getElementById("clock");   // 출력할 장소 선택
+                var currentDate = new Date();   // 현재시간
+                var calendar = currentDate.getFullYear() + "-" + (currentDate.getMonth()+1) + "-" + currentDate.getDate() // 현재 날짜
+
+                var currentHours = addZeros(currentDate.getHours(),2); 
+                var currentMinute = addZeros(currentDate.getMinutes() ,2);
+                var currentSeconds =  addZeros(currentDate.getSeconds(),2);
+
+                clock.innerHTML = calendar+" "+currentHours+":"+currentMinute+":"+currentSeconds; //날짜를 출력해 줌
+                
+                setTimeout("printTime()",1000); // 1초마다 printClock() 함수 호출
+            }   // printTime [E]
+
+            function addZeros(num, digit)   // 자릿수 맞춰주기
             {
-                var clock = document.getElementById("clock");
-                var now = new Date(); 
-                clock.innerHTML = 
-                now.getFullYear() + "-" + 
-                (now.getMonth() + 1) + "-" +
-                now.getDate() + " " + 
-                now.getHours() + ":" + 
-                now.getMinutes() + ":" + 
-                now.getSeconds();
-                setTimeout("printTime()", 1000); 
-            }
+               var zero = '';
+                num = num.toString();
+                if (num.length < digit){
+                   for (i = 0; i < digit - num.length; i++){
+                       zero += '0';
+                    }
+               }
+               return zero + num;
+            }   // addZeros [E]
 
             function Main()
             {
@@ -143,11 +183,9 @@
 
         </script>
 
-
     </head>
     <body onload="Main()">
-
-        <div class="wrapper">
+        <div> <!--class="wrapper"-->
             <header>
                 <h1 style="text-align: center; color: #9494ff;">EMERSERVICE <span style="color: #c7c7ff; font-size: 3.8rem;">HOSPITAL</span></h1>
                 <h2 style="text-align: center; color: #6e7380;">
@@ -170,7 +208,7 @@
                 <form method="POST" id="emerForm">
                     {% csrf_token %}
                 <!--전체 체크리스트 [S]-->    
-                    <!-- 응급도정보 [S]-->																		
+                    <!-- 응급도정보 [S]-->                                                      
                     <div class="emer-table">
                         <h2 class="tableboxTitle">
                             <span style="font-size: 1.5rem;" class="bull">●</span>&nbsp;응급도
@@ -455,6 +493,7 @@
                 <!--전체 체크리스트 [E]-->
     
                 <!--ETE ETA 데이터 전송 [S]-->
+                <input type="hidden" id="by" name="by" value="1">
                 <input type="hidden" id="HOS" name="hos">
     
                 <input type="hidden" id="ETE0" name="ETE_S" value="-">
@@ -480,29 +519,34 @@
                 <div style="background-color: rgb(187, 198, 212);">
                     <p style="font-size: 1.5rem; font-weight: bold; margin: 0;">&nbsp;&nbsp;응급환자 발생 현황</p>
                 </div>
-                <ul id="log">
-                    
-                    <div class="container">
-                        <table>
-                            <thead>
-                            <tr>
+                <div class="show_area">
+                    <table class="tablebox" style="width: 100%; margin: 0;">
+                        <colgroup>
+                            <col width="25%">
+                            <col width="25%">
+                            <col width="25%">
+                            <col width="25%">
+                        </colgroup>
+                        <thead>
+                            <tr class="diffColor3 fixed_top">
                                 <td><B>번호</B></td>
                                 <td><B>응급도</B></td>
                                 <td><B>수술</B></td>
+                                <td><B>병원</B></td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for patient in patients %}
-                            <tr>
-                                <td>{{patient.id}}번</td>
-                                <td>{{patient.emer}}</td>
-                                <td>{{patient.oper}}</td>
-                            </tr>
-                            {% endfor %}
-                            <tbody>
-                        </table>
-
-                </ul>
+                        </thead>
+                        <tbody>
+                        {% for patient in patients %}
+                        <tr class="diffColor4">
+                            <td>{{patient.id}}번</td>
+                            <td>{{patient.emer}}</td>
+                            <td>{{patient.oper}}</td>
+                            <td>{{patient.hos}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tbody>
+                    </table>
+                </div>
             </aside>
         </div>
 
