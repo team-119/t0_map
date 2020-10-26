@@ -97,8 +97,9 @@
             .tableboxTitle { margin-top: 0%; margin-bottom: 0%; padding: 1rem; font-size: 1.3rem;}
             .diffColor1 { background-color: rgb(168, 192, 236); height: 35px; }
             .diffColor2 { background-color: rgb(194, 206, 228); height: 35px; }
-            .diffColor3 { background-color: rgb(190, 201, 221); height: 30px; }
-            .diffColor4 { background-color: rgb(244, 248, 255); height: 30px; }
+            .hosColor { background-color: rgb(190, 201, 221); height: 30px; }
+            .userColor { background-color: rgb(244, 248, 255); height: 30px; }
+            .indexColor { background-color: rgb(165, 167, 170); height: 30px; }
             .tablebox { width: 95%; margin: auto }
             .fixed_top {
                 display:inline-table;
@@ -528,7 +529,7 @@
                             <col width="25%">
                         </colgroup>
                         <thead>
-                            <tr class="diffColor3 fixed_top">
+                            <tr class="indexColor fixed_top">
                                 <td><B>번호</B></td>
                                 <td><B>응급도</B></td>
                                 <td><B>수술</B></td>
@@ -537,7 +538,11 @@
                         </thead>
                         <tbody>
                         {% for patient in patients %}
-                        <tr class="diffColor4">
+                        {% if patient.by == 0 %}
+                        <tr class="userColor">
+                        {% else %}
+                        <tr class="hosColor">
+                        {% endif %}
                             <td>{{patient.id}}번</td>
                             <td>{{patient.emer}}</td>
                             <td>{{patient.oper}}</td>

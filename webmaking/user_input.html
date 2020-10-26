@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <title>AMBULANCE input</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
     <style>
         @font-face {
@@ -139,19 +140,34 @@
         var ETE = ["","","",""];
         var ETA = ["","","",""];
 
-        function printTime() // 페이지에 시간 출력
+        function printTime() {
+                
+            var clock = document.getElementById("clock");   // 출력할 장소 선택
+            var currentDate = new Date();   // 현재시간
+            var calendar = currentDate.getFullYear() + "-" + (currentDate.getMonth()+1) + "-" + currentDate.getDate() // 현재 날짜
+
+            var currentHours = addZeros(currentDate.getHours(),2); 
+            var currentMinute = addZeros(currentDate.getMinutes() ,2);
+            var currentSeconds =  addZeros(currentDate.getSeconds(),2);
+
+            clock.innerHTML = calendar+" "+currentHours+":"+currentMinute+":"+currentSeconds; //날짜를 출력해 줌
+            
+            setTimeout("printTime()",1000); // 1초마다 printClock() 함수 호출
+
+        }   // printTime [E]
+
+        function addZeros(num, digit)   // 자릿수 맞춰주기
         {
-            var clock = document.getElementById("clock");
-            var now = new Date(); 
-            clock.innerHTML = 
-            now.getFullYear() + "-" + 
-            (now.getMonth() + 1) + "-" +
-            now.getDate() + " " + 
-            now.getHours() + ":" + 
-            now.getMinutes() + ":" + 
-            now.getSeconds();
-            setTimeout("printTime()", 1000); 
-        }
+            var zero = '';
+            num = num.toString();
+            if (num.length < digit){
+                for (i = 0; i < digit - num.length; i++){
+                    zero += '0';
+                }
+            }
+            return zero + num;
+
+        }   // addZeros [E]
 
         function setMap()   // 지도 생성
         {
@@ -273,11 +289,19 @@
             }, thisDelay);  // setTimeout [E]
         }   // sleep [E]
 
-        /* @function checkcolor(t, mycolor)   // css에서 하는 방법도 있을듯..
+        function checkcolor(t, mycolor)   // @css에서 하는 방법도 있을듯..
         {
             td = t.parentNode;
-            td.style.backgroundColor = (t.checked) ? "blue" : mycolor
-        }*/
+            if(t.checked)
+            {
+                td.style.backgroundColor = "blue";
+                checkcolor(t, mycolor);
+            } 
+            else
+            {
+                td.style.backgroundColor = mycolor;
+            }
+        }
 
         function Main()   // 메인함수
         {
@@ -599,8 +623,8 @@
                 <!-- 중증응급질환정보 [E]-->
             <!--전체 체크리스트 [E]-->
 
-
             <!--ETE ETA 데이터 전송 [S]-->
+                <input type="hidden" id="by" name="by" value="0">
                 <input type="hidden" id="HOS" name="hos" value="-">
 
                 <input type="hidden" id="ETE0" name="ETE_S">
@@ -614,7 +638,7 @@
                 <input type="hidden" id="ETA3" name="ETA_C">
 
                 <input type="hidden" id="TIME" name="time">
-            <!--ETE ETA 데이터 전송 [E]-->    
+            <!--ETE ETA 데이터 전송 [E]-->
 
 
                 <p><input type="reset" class="button" value="RESET">
@@ -631,5 +655,6 @@
         <a href=http://portal.nemc.or.kr/medi_info/dashboards/dash_total_emer_org_popup_for_egen.do id="egenlink">EGEN 종합상황판</a>
     </footer>
 
+    
 </body>
 </html>

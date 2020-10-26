@@ -11,7 +11,6 @@
 
             function Main()
             {   
-
                 // 1. HTML5의 geolocation 사용해 좌표 로딩    
                 if(navigator.geolocation)
                 {
@@ -19,11 +18,7 @@
                     {
                         my.lat = position.coords.latitude;
                         my.lon = position.coords.longitude;
-
-                        document.getElementById("location").innerHTML = // 위도경도 출력
-                        "Latitude: " + my.lat + "<br>" +
-                        "Longitude: " + my.lon;
-
+                    
                         // 2. 지도 띄우기
                         map = new Tmapv2.Map("map_div", {
                             center : new Tmapv2.LatLng(my.lat, my.lon),
