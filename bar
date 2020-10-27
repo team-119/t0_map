@@ -94,7 +94,7 @@
         });
 
         var ete = $("#ETE").text(); 
-        
+
 
     }(jQuery));
     </script>
@@ -105,7 +105,7 @@
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <h3><strong></strong></h3>
-        <div class="zt-skill-bar"><div data-width="100">이동시간
+        <div class="zt-skill-bar"><div data-width="얘도바꿔야해...">이동시간
             <span id="ETE">
                 {% if result["hos"] == "0" %}
                 {{result["ETE_S"]}}
@@ -117,7 +117,7 @@
                 {{result["ETE_C"]}}
             </span>
         </div></div>
-        <div class="zt-skill-bar"><div data-width="92">처치가능시간
+        <div class="zt-skill-bar"><div data-width="얘도바꿔야해...">처치가능시간
             <span id="">
                 {% if result["hos"] == "0" %}
                 {{result[""]}}
