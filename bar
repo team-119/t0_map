@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="utf-8">
-    <title>jQuery</title>
+    <title>bar</title>
     <style>
         .zt-skill-bar {
             color: #fff;
@@ -20,7 +20,7 @@
         }
 
         .zt-skill-bar * {
-            webkit-transition: all 1.5s ease;
+            -webkit-transition: all 1.5s ease;
             -moz-transition: all 1.5s ease;
             -ms-transition: all 1.5s ease;
                 -o-transition: all 1.5s ease;
@@ -35,8 +35,8 @@
 
             -webkit-border-radius: 2px;
             -moz-border-radius: 2px;
-            -ms- border-radius: 2px;
-                 border-radius: 2px;
+            -ms-border-radius: 2px;
+                border-radius: 2px;
         }
 
         .zt-skill-bar span {
@@ -92,6 +92,10 @@
                 animated_contents();
             }
         });
+
+        var ete = $("#ETE").text(); 
+        
+
     }(jQuery));
     </script>
   </head>
@@ -101,7 +105,29 @@
         <p>&nbsp;</p>
         <p>&nbsp;</p>
         <h3><strong></strong></h3>
-        <div class="zt-skill-bar"><div data-width="88">이동시간<span>25분</span></div></div>
-        <div class="zt-skill-bar"><div data-width="92">수술실<span>37분</span></div></div>
+        <div class="zt-skill-bar"><div data-width="100">이동시간
+            <span id="ETE">
+                {% if result["hos"] == "0" %}
+                {{result["ETE_S"]}}
+                {% elif result["hos"] == "1" %}
+                {{result["ETE_U"]}}
+                {% elif result["hos"] == "2" %}
+                {{result["ETE_B"]}}
+                {% elif result["hos"] == "3" %}
+                {{result["ETE_C"]}}
+            </span>
+        </div></div>
+        <div class="zt-skill-bar"><div data-width="92">처치가능시간
+            <span id="">
+                {% if result["hos"] == "0" %}
+                {{result[""]}}
+                {% elif result["hos"] == "1" %}
+                {{result[""]}}
+                {% elif result["hos"] == "2" %}
+                {{result[""]}}
+                {% elif result["hos"] == "3" %}
+                {{result[""]}}
+            </span>
+        </div></div>
   </body>
 </html>
