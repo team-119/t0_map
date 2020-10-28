@@ -70,17 +70,18 @@
             .result_area {
                 background-color: #8497B0;
                 width: 100%;
-                height: 55%;
+                height: 77%;
                 margin: 0;
             }
             .timebar_area {
+                background-color: thistle;
                 width: 100%;
-                height: 45%;
+                height: 23%;
                 margin: 0; 
             }
             .detail_area {
                 width: 100%;
-                height: 45%;
+                height: 100px;
                 margin: 0;
                 position: absolute;
             }
@@ -142,29 +143,28 @@
             #timebar1 {
                 background: #203864;
                 color: white;
-                float: bottom;
                 font-size: 2rem;
                 vertical-align: middle;
-                margin: 0;
-                margin-top: 13%;
+                padding: 1.5%;
+                margin-top: 3%;
+                margin-bottom: 1%;
                 width: 70%;
-                height: 27%;
+                position: relative;
+                display: inline-block;
             }
             #timebar2 {
                 background: #203864;
                 color: white;
-                float: bottom;
                 font-size: 2rem;
                 vertical-align: middle;
-                margin: 0;
-                margin-top: 5%;
-                margin-bottom: 0;
+                padding: 1.5%;
+                margin-top: 1%;
                 width: 70%;
-                height: 27%;
+                position: relative;
+                display: inline-block;
             }
             #BIBO {
             width: 150px;
-            margin-top: 1%;
             margin-left: 3%;
         }
 
@@ -604,85 +604,85 @@
     </head>
     <body onload="Main()">
 
-        {% if result["hos"] == "0" %}
+        {% if result.hos == "0" %}
 		<input type=hidden id="selectHospital" value=0>
-		{% elif result["hos"] == "1" %}
+		{% elif result.hos == "1" %}
 		<input type=hidden id="selectHospital" value=1>
-		{% elif result["hos"] == "2" %}
+		{% elif result.hos == "2" %}
 		<input type=hidden id="selectHospital" value=2>
-		{% elif result["hos"] == "3" %}
+		{% elif result.hos == "3" %}
 		<input type=hidden id="selectHospital" value=3>
         {% endif %}
 
-        {% if result["emer"] == 1 %}
+        {% if result.emer == 3 %}
         <input type=hidden id="emer" value="긴급">
-        {% if result["emer"] == 2 %}
+        {% elif result.emer == 2 %}
         <input type=hidden id="emer" value="응급">
-        {% if result["emer"] == 3 %}
+        {% elif result.emer == 1 %}
         <input type=hidden id="emer" value="비응급">
         {% endif %}
 
-        {% if result["oper"] == 0 %}
+        {% if result.oper == 0 %}
         <input type=hidden id="oper" value="수술 안함">
-        {% elif result["oper"] == 1 %}
+        {% elif result.oper == 1 %}
         <input type=hidden id="oper" value="[재관류중재술] 심근경색">
-        {% elif result["oper"] == 2 %}
+        {% elif result.oper == 2 %}
         <input type=hidden id="oper" value="[재관류중재술] 뇌경색">
-        {% elif result["oper"] == 3 %}
+        {% elif result.oper == 3 %}
         <input type=hidden id="oper" value="[뇌출혈수술] 거미막하출혈">
-        {% elif result["oper"] == 4 %}
+        {% elif result.oper == 4 %}
         <input type=hidden id="oper" value="[뇌출혈수술] 거미막하출혈외">
-        {% elif result["oper"] == 5 %}
+        {% elif result.oper == 5 %}
         <input type=hidden id="oper" value="[대동맥응급] 흉부">
-        {% elif result["oper"] == 6 %}
+        {% elif result.oper == 6 %}
         <input type=hidden id="oper" value="[대동맥응급] 복부">
-        {% elif result["oper"] == 7 %}
+        {% elif result.oper == 7 %}
         <input type=hidden id="oper" value="[담낭담관질환] 담낭질환">
-        {% elif result["oper"] == 8 %}
+        {% elif result.oper == 8 %}
         <input type=hidden id="oper" value="[담낭담관질환] 담도포함질환">
-        {% elif result["oper"] == 9 %}
+        {% elif result.oper == 9 %}
         <input type=hidden id="oper" value="[복부응급수술] 비외상">
-        {% elif result["oper"] == 10 %}
+        {% elif result.oper == 10 %}
         <input type=hidden id="oper" value="[장중첩/폐색] 영유아">
-        {% elif result["oper"] == 11 %}
+        {% elif result.oper == 11 %}
         <input type=hidden id="oper" value="[사지접합의수술] 수족지접합">
-        {% elif result["oper"] == 12 %}
+        {% elif result.oper == 12 %}
         <input type=hidden id="oper" value="[사지접합의수술] 수족지접합외">
-        {% elif result["oper"] == 13 %}
+        {% elif result.oper == 13 %}
         <input type=hidden id="oper" value="[위장관응급내시경] 성인">
-        {% elif result["oper"] == 14 %}
+        {% elif result.oper == 14 %}
         <input type=hidden id="oper" value="[위장관응급내시경] 영유아">
-        {% elif result["oper"] == 15 %}
+        {% elif result.oper == 15 %}
         <input type=hidden id="oper" value="[기관지응급내시경] 성인">
-        {% elif result["oper"] == 16 %}
+        {% elif result.oper == 16 %}
         <input type=hidden id="oper" value="[기관지응급내시경] 영유아">
-        {% elif result["oper"] == 17 %}
+        {% elif result.oper == 17 %}
         <input type=hidden id="oper" value="[산부인과응급] 분만">
-        {% elif result["oper"] == 18 %}
+        {% elif result.oper == 18 %}
         <input type=hidden id="oper" value="[산부인과응급] 산과수술">
-        {% elif result["oper"] == 19 %}
+        {% elif result.oper == 19 %}
         <input type=hidden id="oper" value="[산부인과응급] 부인과수술">
-        {% elif result["oper"] == 20 %}
+        {% elif result.oper == 20 %}
         <input type=hidden id="oper" value="[안과적응급수술]">
-        {% elif result["oper"] == 21 %}
+        {% elif result.oper == 21 %}
         <input type=hidden id="oper" value="[응급투석] HD">
-        {% elif result["oper"] == 22 %}
+        {% elif result.oper == 22 %}
         <input type=hidden id="oper" value="[응급투석] CRRT">
-        {% elif result["oper"] == 23 %}
+        {% elif result.oper == 23 %}
         <input type=hidden id="oper" value="[영상의학혈관중재] 성인">
-        {% elif result["oper"] == 24 %}
+        {% elif result.oper == 24 %}
         <input type=hidden id="oper" value="[영상의학혈관중재] 영유아">
-        {% elif result["oper"] == 25 %}
+        {% elif result.oper == 25 %}
         <input type=hidden id="oper" value="[정신과적 응급] 폐쇄병동입원">
-        {% elif result["oper"] == 26 %}
+        {% elif result.oper == 26 %}
         <input type=hidden id="oper" value="[중증화상]">
-        {% elif result["oper"] == 27 %}
+        {% elif result.oper == 27 %}
         <input type=hidden id="oper" value="[저출생체중아]">
         {% endif %}
 
-        {% if result["poss"] == 0 %}
+        {% if result.poss == 0 %}
         <input type="hidden" id="show" value=0>
-        {% elif result["poss"] == 1 %}
+        {% elif result.poss == 1 %}
         <input type="hidden" id="show" value=1>
         {% endif %}
 
@@ -712,14 +712,15 @@
                     선택한 병원
                 </div>
                 <div id="result_ete">
-                    {% if result[hos] == "0" %}
-                    {{result["ETE_S"]}}분
-                    {% if result[hos] == "1" %}
-                    {{result["ETE_U"]}}분
-                    {% if result[hos] == "2" %}
-                    {{result["ETE_B"]}}분
-                    {% if result[hos] == "3" %}
-                    {{result["ETE_C"]}}분
+                    {% if result.hos == "0" %}
+                    {{result.ETE_S}}분
+                    {% elif result.hos == "1" %}
+                    {{result.ETE_U}}분
+                    {% elif result.hos == "2" %}
+                    {{result.ETE_B}}분
+                    {% elif result.hos == "3" %}
+                    {{result.ETE_C}}분
+                    {% endif %}
                 </div>   
                 <img src="https://drive.google.com/uc?id=19k2ilTwV_xnjUQ8x-N0aAb-Cwa2IAupI" id="BIBO">
             </div>
