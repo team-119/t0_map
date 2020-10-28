@@ -126,7 +126,7 @@
                 position: relative;
                 float: left;
             }
-            #result_ete {
+            #result_ETE {
                 margin-top: 5%;
                 margin-right: 5%;
                 color: white;
@@ -586,6 +586,8 @@
                 document.getElementById("result_oper").innerHTML
                 = $("#oper").val();
 
+                document.getElementById("result_ETE").innerHTML
+                = $("#ETE").val() + "분"
 
 
                 printTime();
@@ -686,7 +688,15 @@
         <input type="hidden" id="show" value=1>
         {% endif %}
 
-
+        {% if result.hos == "0" %}
+        <input type=hidden id="ETE" value={{result.ETE_S}}>
+        {% elif result.hos == "1" %}
+        <input type=hidden id="ETE" value={{result.ETE_U}}>
+        {% elif result.hos == "2" %}
+        <input type=hidden id="ETE" value={{result.ETE_B}}>
+        {% elif result.hos == "3" %}
+        <input type=hidden id="ETE" value={{result.ETE_C}}>
+        {% endif %}
 
 
         <header>
@@ -711,16 +721,8 @@
                 <div id="result_hos">
                     선택한 병원
                 </div>
-                <div id="result_ete">
-                    {% if result.hos == "0" %}
-                    {{result.ETE_S}}분
-                    {% elif result.hos == "1" %}
-                    {{result.ETE_U}}분
-                    {% elif result.hos == "2" %}
-                    {{result.ETE_B}}분
-                    {% elif result.hos == "3" %}
-                    {{result.ETE_C}}분
-                    {% endif %}
+                <div id="result_ETE">
+                    예상이동시간
                 </div>   
                 <img src="https://drive.google.com/uc?id=19k2ilTwV_xnjUQ8x-N0aAb-Cwa2IAupI" id="BIBO">
             </div>
@@ -733,7 +735,7 @@
                 </div>
             </div>
             <div class="detail_area">
-                도착 후 예상대기시간 {{}}
+                도착 후 예상대기시간
             </div>
         </aside>
 
