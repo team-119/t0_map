@@ -5,6 +5,7 @@
         <title>AMBULANCE output</title>
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300">
 
+
         <style>
             @font-face {
             font-family: 'Source Sans Pro';
@@ -18,8 +19,15 @@
                 font-weight: 300;
                 src: local('Source Sans Pro Light'), local('SourceSansPro-Light'), url(https://fonts.gstatic.com/s/sourcesanspro/v14/6xKydSBYKcSV-LCoeQqfX1RYOo3ik4zwlxdr.ttf) format('truetype');
             }
+            @import url(https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css);
 
-            html { font-size: 10px; margin: 0px; }
+
+
+            html {
+                font-family: 'NanumSquare', sans-serif;
+                font-size: 10px;
+                margin: 0px;
+                }
             h1 { font-size: 4rem; }
             h2 { font-size: 2.5rem; }
             header {
@@ -44,15 +52,16 @@
                 width: 50%;
                 margin-left: 3%;
                 margin-right: 2.5%;
+                margin-bottom: 100px;
                 padding: 0;
                 height: 500px;
                 position: relative;
                 float: left;
             }
             aside {
-                background-color: rgb(212, 216, 189);
                 width: 38%;
                 margin-right: 6.5%;
+                margin-bottom: 100px;
                 height: 500px;
                 position: relative;
                 float: right;
@@ -74,43 +83,48 @@
                 margin: 0;
             }
             .timebar_area {
-                background-color: thistle;
                 width: 100%;
                 height: 23%;
-                margin: 0; 
+                margin: 0;
             }
             .detail_area {
                 width: 100%;
                 height: 100px;
+                font-size: 2rem;
+                color:rgb(63, 61, 59);
                 background: rgba(173,185,202,0.57);
                 margin: 0;
                 position: absolute;
+                top: 270px;
+                left: 0%;
             }
             
 
 
             #clock { 
                 float: left;
-                font-size: 2.5rem;
-                color:rgb(63, 61, 59);
                 margin: 2%;
+                position: absolute;
+                top: 6px;
             }
 
             #result_emer {
                 width: 10%;
-                background:rgb(188, 232, 243);
+                background:rgb(223, 223, 223);
                 padding: 1rem;
                 margin-left: 33%;
                 border-radius:3px 3px 3px 3px;
+                font-size: 1.5rem;
                 position: relative;
                 float: left;
             }
             #result_oper {
                 width: 20%;
-                background:rgb(188, 232, 243);
+                background:rgb(223, 223, 223);
                 padding: 1rem;
                 margin-right: 33%;
                 border-radius:3px 3px 3px 3px;
+                font-size: 1.5rem;
                 position: relative;
                 float: right;
             }
@@ -118,7 +132,7 @@
                 margin-top: 5%;
                 margin-left: 5%;
                 color: white;
-                font-size: 2.5rem;
+                font-size: 2.3rem;
                 width: 47%;
                 height: 40%;
                 position: relative;
@@ -137,6 +151,13 @@
                 float: right;
                 
             }
+            #result_wait {
+                block-size: 100%;
+                margin: 2%;
+                position: absolute;
+                top: 41px;
+            }
+
 
             #timebar1 {
                 background: #203864;
@@ -146,9 +167,11 @@
                 padding: 1.5%;
                 margin-top: 3%;
                 margin-bottom: 1%;
-                width: 70%;
-                position: relative;
-                display: inline-block;
+                width: 15%;
+                top: 380px;
+                position: absolute;
+                transition: all, ease-out, 1.5s;
+                transition-delay: 400ms;
             }
             #timebar2 {
                 background: #203864;
@@ -157,14 +180,16 @@
                 vertical-align: middle;
                 padding: 1.5%;
                 margin-top: 1%;
-                width: 70%;
-                position: relative;
-                display: inline-block;
+                width: 22%;
+                top: 450px;
+                position: absolute;
+                transition: all, ease-out, 1.5s;
+                transition-delay: 400ms;
             }
             #BIBO {
             width: 150px;
             margin-left: 3%;
-        }
+            }
 
 
         </style>
@@ -189,15 +214,17 @@
             var u = {name: "[기관]<br/>경기도의료원<br/>의정부병원", lat: 37.741181, lon: 127.042525};
             var b = {name: "[기관]<br/>의료법인영동의료재단<br/>의정부백병원", lat: 37.745791, lon: 127.061916};
             var c = {name: "[기관]<br/>추병원", lat: 37.750760, lon: 127.046260};
-            const hospital = [s, u, b, c];            
-            var selectHospital=2;
+            const hospital = [s, u, b, c];
+            var selectHospital = 0;            
 
 
             function printTime() {
                 
                 var clock = document.getElementById("clock");   // 출력할 장소 선택
                 var currentDate = new Date();   // 현재시간
-                var calendar = currentDate.getFullYear() + "-" + (currentDate.getMonth()+1) + "-" + currentDate.getDate() // 현재 날짜
+                var calendar = addZeros(currentDate.getFullYear(),2) + "-"
+                             + addZeros((currentDate.getMonth()+1),2) + "-" 
+                             + addZeros(currentDate.getDate(),2); // 현재 날짜
 
                 var currentHours = addZeros(currentDate.getHours(),2); 
                 var currentMinute = addZeros(currentDate.getMinutes() ,2);
@@ -574,7 +601,40 @@
 
             function Main()
             {
-                //selectHospital = $("#selectHospital").val();
+
+                // 1. 안내가능한 병원 없을때 알림 창 띄우기
+                if($("#show").val() == 1 )
+                {
+                alert("지역 내 수술가능 병원이 없어 가장 가까운 병원으로 안내합니다");
+                }
+
+
+                // 2. 시계&지도 띄우기
+                printTime();
+                Map_nav();
+
+
+                // 3. 결과데이터 받아오기
+                var date = new Date();
+                var nowHour = date.getHours();
+                var nowMinute = date.getMinutes();
+
+                var time = [nowHour, nowMinute];
+                console.log(time[0],time[1]);
+
+                selectHospital = $("#selectHospital").val();
+                var ETE = $("#ETE").val();
+                var ETA = $("#ETA").val();
+
+                var start = $("#start").val();
+                var end = $("#end").val();
+
+                var aid = 0; // 수술까지 남은시간 (분)
+                aid += (start[1]>time[1]) ? (start[1]-time[1]) : (60+start[1]-time[1]); // 분 계산해서 더하기
+                aid += (start[1]>time[1]) ? (start[0]-time[0])*60 : (start[0]-time[0]-1)*60; // 시 계산해서 더하기
+                console.log("aid" + aid);
+
+                // 4. 선택조건정보 및 추천응급실 표시
                 document.getElementById("result_hos").innerHTML
                     = hospital[selectHospital].name;
 
@@ -587,24 +647,45 @@
                 document.getElementById("result_ETE").innerHTML
                 = $("#ETE").val() + "분"
 
+                document.getElementById("timebar_ETE").innerHTML
+                = $("#ETE").val() + "분"
 
-                printTime();
-                //Map_nav();
+                document.getElementById("timebar_aid").innerHTML
+                = aid + "분"
 
-                if($("#show").val() == 1 )
-                {
-                alert("지역 내 수술가능 병원이 없어 가장 가까운 병원으로 안내합니다");
+
+                // 5. 도착 후 대기시간 계산 및 표시
+                var wait = [0,0];
+
+                if( (ETA[0]*60+ETA[1]) < (start[0]*60+start[1]) ){
+
+                    wait[1] = (start[1]>ETA[1]) ? (start[1]-ETA[1]) : (60+start[1]-ETA[1]); // 분 계산
+                    wait[0] = (start[1]>ETA[1]) ? (start[0]-ETA[0]) : (start[0]-ETA[0]-1); // 시 계산
+                    
+                    document.getElementById("wait").innerHTML
+                    = wait[0] +"시간 "+wait[1]+"분 대기"
+                }
+                else{
+
+                    document.getElementById("wait").innerHTML
+                    = "대기 없음"
                 }
 
+                
+                // 6. 시간bar 길이조절 및 애니메이션
+                console.log(ETE + " " + aid)
+                setTimeout( $("#timebar1").animate({"width":(28+72*ETE/(ETE+aid))+"%"}), 300 );
+                setTimeout( $("#timebar2").animate({"width":(28+72*aid/(ETE+aid))+"%"}), 300 );
 
-            }
+            } // Main [E]
 
 
         </script>
     </head>
     <body onload="Main()">
 
-       <span>
+       <span id="getResult">
+            <!--추천 병원-->
             {% if result.hos == "0" %}
     		<input type=hidden id="selectHospital" value=0>
     		{% elif result.hos == "1" %}
@@ -615,6 +696,7 @@
     		<input type=hidden id="selectHospital" value=3>
             {% endif %}
     
+            <!--응급도-->
             {% if result.emer == 3 %}
             <input type=hidden id="emer" value="긴급">
             {% elif result.emer == 2 %}
@@ -623,6 +705,7 @@
             <input type=hidden id="emer" value="비응급">
             {% endif %}
     
+            <!--중증응급질환정보-->
             {% if result.oper == 0 %}
             <input type=hidden id="oper" value="수술 안함">
             {% elif result.oper == 1 %}
@@ -681,12 +764,14 @@
             <input type=hidden id="oper" value="[저출생체중아]">
             {% endif %}
     
+            <!--추천불가능여부확인-->
             {% if result.poss == 0 %}
             <input type="hidden" id="show" value=0>
             {% elif result.poss == 1 %}
             <input type="hidden" id="show" value=1>
             {% endif %}
     
+            <!--ETE-->
             {% if result.hos == "0" %}
             <input type=hidden id="ETE" value={{result.ETE_S}}>
             {% elif result.hos == "1" %}
@@ -696,6 +781,23 @@
             {% elif result.hos == "3" %}
             <input type=hidden id="ETE" value={{result.ETE_C}}>
             {% endif %}
+
+            <!--ETA-->
+            {% if result.hos == "0" %}
+            <input type=hidden id="ETA" value={{result.ETA_S}}>
+            {% elif result.hos == "1" %}
+            <input type=hidden id="ETA" value={{result.ETA_U}}>
+            {% elif result.hos == "2" %}
+            <input type=hidden id="ETA" value={{result.ETA_B}}>
+            {% elif result.hos == "3" %}
+            <input type=hidden id="ETA" value={{result.ETA_C}}>
+            {% endif %}
+
+            <!--처치시작/처치끝/정보조회시간-->
+            <input type=hidden id="start" value={{result.start}}>
+            <input type=hidden id="end" value={{result.end}}>
+            <input type=hidden id="time" value={{result.time}}>
+
        </span>
 
 
@@ -727,15 +829,15 @@
             </div>
             <div class="timebar_area">
                 <div id="timebar1">
-                    이동시간
+                    이동시간 <span id="timebar_ETE" style="font-size: 1rem; float:right"></span>
                 </div>
                 <div id="timebar2">
-                    처치가능시간
+                    처치가능시간 <span id="timebar_aid" style="font-size: 1rem; float:right"></span>
                 </div>
             </div>
             <div class="detail_area">
-                <div id="clock"></div><br/>
-                <div id="result_wait">도착 후 예상대기시간</div>
+                <div id="clock">현재시간</div>
+                <div id="result_wait">도착 후 치료까지 <span id='wait'>--</span></div>
             </div>
         </aside>
 

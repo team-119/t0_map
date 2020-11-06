@@ -20,12 +20,13 @@
 
 			//경로그림정보
 			var drawInfoArr = [];
-	
+			var drawInfoArr2 = [];
+		
 			var chktraffic = [];
 			var resultdrawArr = [];
             var resultMarkerArr = [];
 
-			function getLocation()  // 초기좌표 로딩, 지도중심변경, 마커위치변경
+			function getLocation()  // 좌표 로딩, 지도중심변경, 현위치마커
 			{  
 				if(navigator.geolocation)
 				{
@@ -33,49 +34,137 @@
 					{
 						my.lat = position.coords.latitude;
 						my.lon = position.coords.longitude;
-						console.log("초기위치 " + my.lat + " " + my.lon);
+						console.log("현재위치 " + my.lat + " " + my.lon);
 						
 						// 지도중심 변경
 						map.setCenter(new Tmapv2.LatLng(my.lat, my.lon));
-						console.log("지도중심 초기위치로 변경");
+						console.log("지도중심 현위치로 변경")
 
 						// 현위치마커 변경
 						marker_s.setPosition(new Tmapv2.LatLng(my.lat, my.lon));
-						console.log("마커좌표 초기위치로 변경");
+						console.log("마커좌표 현위치로 변경")
+
+
+							$.ajax({
+							type : "POST",
+							url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result",
+							async : false,
+							data : {
+								"appKey" : "l7xx87a72efd23ad4f03b86093f5f91895a1",
+								"startX" : my.lon,
+								"startY" : my.lat,
+								"endX" : hospital[selectHospital].lon,
+								"endY" : hospital[selectHospital].lat,
+								"reqCoordType" : "WGS84GEO",
+								"resCoordType" : "EPSG3857",
+								"searchOption" : 2,
+								"trafficInfo" : "Y"
+							},
+							success : function(response) {
+								var resultData = response.features;
+
+								var tDistance = "총 거리 : "
+										+ (resultData[0].properties.totalDistance / 1000).toFixed(1) + "km,";
+								var tTime = " 총 시간 : "
+										+ (resultData[0].properties.totalTime / 60).toFixed(0) + "분";
+								
+								$("#result").text(tDistance + tTime);	// 경로 정보 출력
+
+								// 교통정보 포함 경로출력
+									for (var i in resultData)	//for문 [S]
+									{
+										var geometry = resultData[i].geometry;
+										var properties = resultData[i].properties;
+
+										if (geometry.type == "LineString") {
+											//교통 정보도 담음
+											chktraffic.
+													push(geometry.traffic);
+											
+											var sectionInfos = [];
+											var trafficArr = geometry.traffic;
+
+											for ( var j in geometry.coordinates) {
+												// 경로들의 결과값들을 포인트 객체로 변환 
+												var latlng = new Tmapv2.Point(
+														geometry.coordinates[j][0],
+														geometry.coordinates[j][1]);
+												// 포인트 객체를 받아 좌표값으로 변환
+												var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlng);
+
+												sectionInfos
+														.push(convertPoint);
+											}
+
+											drawLine(sectionInfos, trafficArr);
+										}	// if [E]
+										else {
+
+											var markerImg = "";
+											var pType = "";
+
+											if (properties.pointType == "S") { //출발지 마커
+												markerImg = "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png";
+												pType = "S";
+											} else if (properties.pointType == "E") { //도착지 마커
+												markerImg = "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png";
+												pType = "E";
+											} else { //각 포인트 마커
+												markerImg = "http://topopen.tmap.co.kr/imgs/point.png";
+												pType = "P"
+											}	// else [E]
+
+											// 경로들의 결과값들을 포인트 객체로 변환 
+											var latlon = new Tmapv2.Point(
+													geometry.coordinates[0],
+													geometry.coordinates[1]);
+											// 포인트 객체를 받아 좌표값으로 다시 변환
+											var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlon);
+
+											var routeInfoObj = {
+												markerImage : markerImg,
+												lng : convertPoint._lng,
+												lat : convertPoint._lat,
+												pointType : pType
+											};
+											// 마커 추가
+											addMarkers(routeInfoObj);
+										}
+									}	//for문 [E]
+							},
+							error : function(request, status, error) {
+								console.log("code:"
+										+ request.status + "\n"
+										+ "message:"
+										+ request.responseText
+										+ "\n" + "error:" + error);
+							}
+						});
 
 					}); // getCurrentPosition [E]
 
 				} // if(navigator.geolocation) [E]
 
-				setInterval(moveMarker_s(),1000);
-
 			}   // getLocation [E]
 
-			function moveMarker_s()  //  현위치마커
-			{  
-				if(navigator.geolocation)
+			function addMarkers(infoObj)	// 마커 생성하기
+			{
+				var size = new Tmapv2.Size(24, 38);
+		
+				if (infoObj.pointType == "P")
 				{
-					navigator.geolocation.getCurrentPosition(function(position)
-					{
-						var lat = position.coords.latitude;
-						var lon = position.coords.longitude;
-						console.log("현재위치 " + lat + " " + lon);
-						
-						// 지도중심 변경
-						map.setCenter(new Tmapv2.LatLng(lat, lon));
-						console.log("지도중심 현위치로 변경");
-
-						// 현위치마커 변경
-						marker_s.setPosition(new Tmapv2.LatLng(lat, lon));
-						console.log("마커좌표 현위치로 변경");
-
-					}); // getCurrentPosition [E]
-
-				} // if(navigator.geolocation) [E]
-
-			}   // getLocation [E]
-
-
+					size = new Tmapv2.Size(8, 8);
+				}
+		
+				marker_p = new Tmapv2.Marker({
+					position : new Tmapv2.LatLng(infoObj.lat, infoObj.lng),
+					icon : infoObj.markerImage,
+					iconSize : size,
+					map : map
+				});
+		
+				resultMarkerArr.push(marker_p);
+			}
 		
 			function drawLine(arrPoint, traffic)	// 라인 그리기
 			{
@@ -266,115 +355,13 @@
 							iconSize : new Tmapv2.Size(24, 38),
 							map : map
 						});
+
 				//3. 현재 위치 좌표 로딩 및 초기화
-				getLocation();
+				resettingMap();
 
 				// 4. 경로탐색 API 사용요청
-				$("#btn_select")
-						.click(
-
-								function() {
-		
-									//JSON TYPE EDIT [S]
-									$
-											.ajax({
-												type : "POST",
-												url : "https://apis.openapi.sk.com/tmap/routes?version=2&format=json&callback=result",
-												async : false,
-												data : {
-													"appKey" : "l7xx87a72efd23ad4f03b86093f5f91895a1",
-													"startX" : my.lon,
-													"startY" : my.lat,
-													"endX" : hospital[selectHospital].lon,
-													"endY" : hospital[selectHospital].lat,
-													"reqCoordType" : "WGS84GEO",
-													"resCoordType" : "EPSG3857",
-													"searchOption" : 2,
-													"trafficInfo" : "Y"
-												},
-												success : function(response) {
-		
-													var resultData = response.features;
-		
-													var tDistance = "총 거리 : "
-															+ (resultData[0].properties.totalDistance / 1000).toFixed(1) + "km,";
-													var tTime = " 총 시간 : "
-															+ (resultData[0].properties.totalTime / 60).toFixed(0) + "분";
-													
-													$("#result").text(tDistance + tTime);	// 경로 정보 출력
-		
-
-													// 교통정보 포함 경로출력
-														for (var i in resultData)	//for문 [S]
-														{
-															var geometry = resultData[i].geometry;
-															var properties = resultData[i].properties;
-		
-															if (geometry.type == "LineString") {
-																//교통 정보도 담음
-																chktraffic.
-																		push(geometry.traffic);
-																
-																var sectionInfos = [];
-																var trafficArr = geometry.traffic;
-		
-																for ( var j in geometry.coordinates) {
-																	// 경로들의 결과값들을 포인트 객체로 변환 
-																	var latlng = new Tmapv2.Point(
-																			geometry.coordinates[j][0],
-																			geometry.coordinates[j][1]);
-																	// 포인트 객체를 받아 좌표값으로 변환
-																	var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlng);
-		
-																	sectionInfos
-																			.push(convertPoint);
-																}
-		
-																drawLine(sectionInfos, trafficArr);
-															}	// if [E]
-															else {
-		
-																var markerImg = "";
-																var pType = "";
-		
-																if (properties.pointType == "S") { //출발지 마커
-																	markerImg = "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_s.png";
-																	pType = "S";
-																} else if (properties.pointType == "E") { //도착지 마커
-																	markerImg = "http://tmapapis.sktelecom.com/upload/tmap/marker/pin_r_m_e.png";
-																	pType = "E";
-																} else { //각 포인트 마커
-																	markerImg = "http://topopen.tmap.co.kr/imgs/point.png";
-																	pType = "P"
-																}	// else [E]
-		
-																// 경로들의 결과값들을 포인트 객체로 변환 
-																var latlon = new Tmapv2.Point(
-																		geometry.coordinates[0],
-																		geometry.coordinates[1]);
-																// 포인트 객체를 받아 좌표값으로 다시 변환
-																var convertPoint = new Tmapv2.Projection.convertEPSG3857ToWGS84GEO(latlon);
-		
-																var routeInfoObj = {
-																	markerImage : markerImg,
-																	lng : convertPoint._lng,
-																	lat : convertPoint._lat,
-																	pointType : pType
-																};													
-															}
-														}	//for문 [E]
-												},
-												error : function(request, status, error) {
-													console.log("code:"
-															+ request.status + "\n"
-															+ "message:"
-															+ request.responseText
-															+ "\n" + "error:" + error);
-												}
-											});
-									//JSON TYPE EDIT [E]
-								}); 	// .click function [E]
-
+				getLocation();
+	
 			}	// function Map_nav() [E]
 		
 		</script>
